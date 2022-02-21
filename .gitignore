@@ -1,0 +1,32 @@
+# Virtual environment
+/venv
+.env.local
+.env.*.local
+
+# Python cache
+__pycache__
+*.pyc
+
+# Log files
+*.log
+
+# Compiled translations
+*.mo
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.sw*
+.DS_Store
+
+# Testing and coverage
+.pytest_cache
+.coverage
+htmlcov
+
+# Celery
+celerybeat-schedule
+
+# Database
+*.sqlite3
