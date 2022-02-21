@@ -9,7 +9,7 @@ class Job(models.Model):
         SUCCESS = "SUCCESS", _("Success")
         FAILURE = "FAILURE", _("Failure")
 
-    status = models.CharField(max_length=7, choices=StatusChoices.choices)
+    status = models.CharField(max_length=7, choices=StatusChoices.choices, default=StatusChoices.CREATED)
 
     class Meta:
         abstract = True

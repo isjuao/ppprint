@@ -30,3 +30,7 @@ celerybeat-schedule
 
 # Database
 *.sqlite3
+
+# Test data
+test_data
+media
