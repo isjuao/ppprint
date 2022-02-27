@@ -6,18 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ppprint', '0001_initial'),
+        ("ppprint", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='importjob',
-            name='status',
-            field=models.CharField(choices=[('CREATED', 'Created'), ('RUNNING', 'Running'), ('SUCCESS', 'Success'), ('FAILURE', 'Failure')], default='CREATED', max_length=7),
+            model_name="importjob",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("CREATED", "Created"),
+                    ("RUNNING", "Running"),
+                    ("SUCCESS", "Success"),
+                    ("FAILURE", "Failure"),
+                ],
+                default="CREATED",
+                max_length=7,
+            ),
         ),
         migrations.AlterField(
-            model_name='visualizationjob',
-            name='status',
-            field=models.CharField(choices=[('CREATED', 'Created'), ('RUNNING', 'Running'), ('SUCCESS', 'Success'), ('FAILURE', 'Failure')], default='CREATED', max_length=7),
+            model_name="visualizationjob",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("CREATED", "Created"),
+                    ("RUNNING", "Running"),
+                    ("SUCCESS", "Success"),
+                    ("FAILURE", "Failure"),
+                ],
+                default="CREATED",
+                max_length=7,
+            ),
         ),
     ]

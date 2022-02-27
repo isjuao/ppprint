@@ -1,8 +1,9 @@
-from ppprint.celery import app
 from typing import Type
-from ppprint.models import Job, ImportJob
 
-from ppprint.preprocessing import run
+from ppprint.celery import app
+from ppprint.models import ImportJob, Job
+from ppprint.preprocessing.run import run_extract, run_info
+
 
 def watchdog(cls: Type[Job]):
     def outer(f):
@@ -19,10 +20,12 @@ def watchdog(cls: Type[Job]):
             return result
 
         return inner
+
     return outer
 
 
 @app.task(bind=True, name="run_import_job")
 @watchdog(ImportJob)
 def run_import_job(self, import_job_pk: int):
-    run(import_job_pk)
+    json_path = run_extract(import_job_pk)
+    results = run_info(import_job_pk, json_path)
