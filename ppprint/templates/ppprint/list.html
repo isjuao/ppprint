@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for job in jobs %}
+        <a href="{% url "visualization" pk=job.pk %}">
+        {{ job.get_status_display }}
+        {{ job.pk }}
+        </a>
+    {% endfor %}
+{% endblock content %}
