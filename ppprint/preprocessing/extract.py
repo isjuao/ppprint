@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 import json
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 
 
 def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -96,6 +96,7 @@ def extract_pbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
         .unstack(level=-1)
     )
     df_new = df_new.join(region_type_counts, how="left").fillna(0)
+    df_new = ensure_exists(["Signal Peptide", "Cytoplasmic", "Extracellular", "Transmembrane Helix"], df_new)
     df_new["M"] = df_new.pop("Signal Peptide") + df_new.pop("Transmembrane Helix")
     df_new = df_new.rename(columns={"Cytoplasmic": "I", "Extracellular": "O"})
     df_new["I"] = df_new["I"] / df_new["protein length"]
@@ -117,9 +118,9 @@ def extract_pbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
         # TODO: check what happens if signal peptide is immediately before first TMH
         return str(df.at[first - 1, "description"])
 
-    # TODO: check if possible that only Cytoplasmic as description (region but no Transmembrane Helix)
-    # df_tmp = df_source[df_source["description"] == "Transmembrane Helix"].drop_duplicates("protein")["protein"]
-    # df_source = df_source[df_source["protein"].isin(df_tmp)]
+    # Filter to TMPs, because it is possible that regions of proteins without TMH are in df_source, need orientation 0
+    df_tmp = df_source[df_source["description"] == "Transmembrane Helix"].drop_duplicates("protein")["protein"]
+    df_source = df_source[df_source["protein"].isin(df_tmp)]
 
     # Compute the orientation for all TMPs
     orientation_series = df_source.groupby("protein").apply(
@@ -131,8 +132,21 @@ def extract_pbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
     return df_new
 
 
+def ensure_exists(columns: List[str], df: pd.DataFrame):
+    for column in columns:
+        if column not in df:
+            df[column] = 0
+    return df
+
+
 def extract_pbased_prona(df_source: pd.DataFrame, *args, **kwargs):
     """Extracts protein-based data for prona."""
+
+    region_classes = ["PBR", "DBR", "RBR"]
+
+    # Filter all regions based on allowed categories (only highest RI class)
+    allowed_ri = ["Protein Binding (RI: 67-100)", "DNA Binding (RI: 67-100)", "RNA Binding (RI: 67-100)"]
+    df_source = df_source[df_source["description"].isin(allowed_ri)]
 
     # Filter (all) regions based on minlength requirement
     minlength = kwargs.pop("minlength")
@@ -143,7 +157,33 @@ def extract_pbased_prona(df_source: pd.DataFrame, *args, **kwargs):
     # Calculate region content as last step, when (correct) lengths of all proteins got collected
     df_new["region content"] = df_new["sum region lengths"] / df_new["protein length"]
 
-    # TODO: calculate additional region contents and num regions per (binding) region type
+    # Calculate additional region contents per region type
+    region_type_counts = (
+        df_source.groupby(["protein", "description"])["region length"]
+        .sum()
+        .unstack(level=-1)
+    )
+
+    df_new = df_new.join(region_type_counts, how="left").fillna(0)
+    df_new = ensure_exists(allowed_ri, df_new)
+    df_new = df_new.rename(columns={"Protein Binding (RI: 67-100)": "PBR content",
+                                    "DNA Binding (RI: 67-100)": "DBR content",
+                                    "RNA Binding (RI: 67-100)": "RBR content"})
+    for region_class in region_classes:
+        df_new[f"{region_class} content"] = df_new[f"{region_class} content"] / df_new["protein length"]
+
+    # Calculate number of regions per (binding) region type
+    num_regions_counts = (
+        df_source.groupby(["protein", "description"])
+        .size()
+        .unstack(level=-1)
+    )
+
+    df_new = df_new.join(num_regions_counts, how="left").fillna(0)
+    df_new = ensure_exists(allowed_ri, df_new)
+    df_new = df_new.rename(columns={"Protein Binding (RI: 67-100)": "num PBR",
+                                    "DNA Binding (RI: 67-100)": "num DBR",
+                                    "RNA Binding (RI: 67-100)": "num RBR"})
 
     return df_new
 
@@ -169,22 +209,27 @@ def extract_pbased_all(
             **additional_aggfuncs,
         }
     )
+    # Add protein length from other dataframe
     df_new = df_new.join(df_seq["protein length"], how="right").fillna(0)
 
     return df_new
 
 
 def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
-    """"""
+    """TODO"""
 
     # Store function and required params for each feature
+    # TODO: Is region type for prona (PBASED!) really required, if actually never used this far?
     mapping = {
         "tmseg": (
             extract_pbased_tmseg,
             {"minlength": 12, "region_type": ["Transmembrane Helix"]},
         ),
         "mdisorder": (extract_pbased_mdisorder, {"minlength": 30}),
-        "prona": (extract_pbased_prona, {"minlength": 6}),
+        "prona": (
+            extract_pbased_prona,
+            {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]}
+        ),
     }
     results = {}
 
@@ -198,3 +243,95 @@ def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
         results[f"{feature} pbased"] = df_p
 
     return results
+
+
+def extract_rbased_mdisorder(df_source: pd.DataFrame, *args, **kwargs):
+    """"""
+
+    pass
+
+
+def extract_rbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
+    """"""
+
+    # Extract signal peptide containing proteins and shift the indices of their regions
+    df_sig = df_source[df_source["description"] == "Signal Peptide"].drop_duplicates(
+        "protein"
+    )[["protein", "region length"]]
+    df_sig = df_sig.rename(columns={"region length": "shift size"}).set_index("protein")
+    df_source = df_source.join(df_sig, how="left", on="protein").fillna(0)
+    df_source["begin"] = df_source["begin"] - df_source["shift size"]
+    df_source["end"] = df_source["end"] - df_source["shift size"]
+
+    # TODO: write protein length in df_source and clip it right here (should be fine for rbased?) so that we can leave
+    #       the point region calculation in _all
+
+    df_new = extract_rbased_all(df_source, *args, **kwargs)
+
+    return df_new
+
+
+def extract_rbased_prona(df_source: pd.DataFrame, *args, **kwargs):
+    pass
+
+
+def extract_rbased_all(
+    df_source: pd.DataFrame,
+    df_seq: pd.DataFrame,
+    minlength: int,
+    region_type: Optional[List[str]] = None,
+):
+    if region_type:
+        # Remove unwanted region types
+        df_source = df_source[df_source["description"].isin(region_type)]
+    # Filter based on minlength requirement
+    df_source = df_source[df_source["region length"] >= minlength]
+
+    # Build region from begin and end
+    df_new = pd.DataFrame()
+    df_new["protein"] = df_source["protein"]
+    df_source["region"] = df_source[["begin", "end"]].apply(tuple, axis=1)
+    df_new = df_new.join(df_source["region"], how="left").fillna(0)
+    # Add protein length from other dataframe
+    df_new = df_new.join(df_seq["protein length"], on="protein", how="left").fillna(0)
+    # Add description (relevant if multiple types allowed)
+    df_new = df_new.join(df_source["description"], how="left").fillna(0)
+
+    # Calculate point region
+    df_source["point region"] = df_source[["begin", "end"]]\
+        .div(df_source["protein length"].values, axis=0)\
+        .apply(tuple, axis=1)
+    df_new = df_new.join(df_source["point region"], how="left").fillna(0)
+
+    return df_new
+
+
+def extract_rbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
+    """TODO"""
+
+    # Store function and required params for each feature
+    mapping = {
+        "tmseg": (
+            extract_rbased_tmseg,
+            {"minlength": 12, "region_type": ["Transmembrane Helix"]},
+        ),
+        "mdisorder": (extract_rbased_mdisorder, {"minlength": 30}),
+        "prona": (
+            extract_rbased_prona,
+            {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]}
+        ),
+    }
+    results = {}
+
+    for feature, (func, kwargs) in mapping.items():
+        # Reduce source dataframe to feature and calculate region lengths
+        df_curr = df_source[df_source["feature"] == feature]
+        df_curr["region length"] = df_curr["end"] - df_curr["begin"] + 1
+
+        # Perform feature-specific extraction and store pbased results
+        df_r = func(df_curr, df_seq, **kwargs)
+        results[f"{feature} rbased"] = df_r
+
+    return results
+
+
