@@ -44,7 +44,7 @@ def run_info(json_path: Path):
     # will contain both pbased and rbased results for each feature, for the given proteome
 
     # Protein-level extraction
-    # results.update(extract_pbased(df_source, df_seq))
+    results.update(extract_pbased(df_source, df_seq))
 
     # Region-level extraction
     results.update(extract_rbased(df_source, df_seq))
@@ -52,7 +52,9 @@ def run_info(json_path: Path):
     return results
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # comment out django imports first
-    example_json_path = Path("/home/isabell/work/python/thesis/ppprint/media/import_job/5/data.json")
+    example_json_path = Path(
+        "/home/isabell/work/python/thesis/ppprint/media/import_job/3/data.json"
+    )
     run_info(example_json_path)

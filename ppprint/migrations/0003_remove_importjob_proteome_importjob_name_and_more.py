@@ -6,29 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ppprint', '0002_alter_importjob_status_alter_visualizationjob_status'),
+        ("ppprint", "0002_alter_importjob_status_alter_visualizationjob_status"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='importjob',
-            name='proteome',
+            model_name="importjob",
+            name="proteome",
         ),
         migrations.AddField(
-            model_name='importjob',
-            name='name',
-            field=models.CharField(default='', max_length=200),
+            model_name="importjob",
+            name="name",
+            field=models.CharField(default="", max_length=200),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='visualizationjob',
-            name='sources',
-            field=models.ManyToManyField(to='ppprint.ImportJob'),
+            model_name="visualizationjob",
+            name="sources",
+            field=models.ManyToManyField(to="ppprint.ImportJob"),
         ),
         migrations.DeleteModel(
-            name='DataSource',
+            name="DataSource",
         ),
         migrations.DeleteModel(
-            name='Proteome',
+            name="Proteome",
         ),
     ]

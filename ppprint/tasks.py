@@ -31,7 +31,7 @@ def watchdog(cls: Type[Job]):
 @watchdog(ImportJob)
 def run_import_job(self, import_job_pk: int):
     json_path = run_extract(import_job_pk)
-    results = run_info(import_job_pk, json_path)
+    results = run_info(json_path)
 
 
 @app.task(bind=True, name="run_visualization_job")
@@ -41,15 +41,14 @@ def run_visualization_job(self, visualization_job_pk: int):
 
     job = VisualizationJob.objects.get(pk=visualization_job_pk)
     results = {}
-    for source in job.sources.all():    # sources are ImportJobs
+    for source in job.sources.all():  # sources are ImportJobs
         json_path = (
-                Path(settings.BASE_DIR)
-                / settings.MEDIA_ROOT
-                / "import_job"
-                / str(source.pk)
-                / "data.json"
+            Path(settings.BASE_DIR)
+            / settings.MEDIA_ROOT
+            / "import_job"
+            / str(source.pk)
+            / "data.json"
         )
         results[source.pk] = run_info(json_path)
 
     run(visualization_job_pk, results)
-

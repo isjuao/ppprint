@@ -6,7 +6,7 @@ from ppprint.forms import UploadForm, SelectionForm
 from ppprint.models import ImportJob, VisualizationJob
 from ppprint.tasks import run_import_job, run_visualization_job
 
-from ppprint.visualization.plot import LengthDistributionPlot
+from ppprint.visualization import PLOTS
 
 
 def home(request):
@@ -17,7 +17,9 @@ def create_import_job(request):
     if request.method == "POST":
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
-            import_job = ImportJob.objects.create(name=form.cleaned_data["name"])
+            import_job = ImportJob.objects.create(
+                name=form.cleaned_data["name"], color=form.cleaned_data["color"]
+            )
             filename = request.FILES["file"].name
             default_storage.save(
                 f"import_job/{import_job.pk}/{filename}", request.FILES["file"]
@@ -49,6 +51,5 @@ def list_visualization_jobs(request):
 def detail_visualization_job(request, pk):
     vj = VisualizationJob.objects.get(pk=pk)
     base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
-    plots = [LengthDistributionPlot]
-    mapping = [(base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME) for cls in plots]
+    mapping = [(base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME) for cls in PLOTS]
     return render(request, "ppprint/plots.html", {"job": vj, "mapping": mapping})
