@@ -1,13 +1,14 @@
-from django.contrib import admin
-from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import path
+
 from ppprint.views import (
-    create_import_job,
-    home,
     compare_proteomes,
-    list_visualization_jobs,
+    create_import_job,
     detail_visualization_job,
+    home,
+    list_visualization_jobs,
 )
 
 urlpatterns = [

@@ -1,8 +1,9 @@
+from typing import Optional, Tuple
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ppprint.validators import validate_color
-from typing import Tuple, Optional
 
 
 class StatusChoices(models.TextChoices):

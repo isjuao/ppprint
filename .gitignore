@@ -34,3 +34,4 @@ celerybeat-schedule
 # Test data
 test_data
 media
+*.tar.*
