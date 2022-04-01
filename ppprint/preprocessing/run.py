@@ -1,12 +1,14 @@
+import pickle
 import tarfile
 from pathlib import Path
+from typing import Dict
 
 import pandas as pd
 from django.conf import settings
 
 from ppprint.models import ImportJob
+from ppprint.preprocessing.extract import extract_pbased, extract_rbased, read_json
 from ppprint.preprocessing.parse import write_json
-from ppprint.preprocessing.extract import read_json, extract_pbased, extract_rbased
 
 
 def extract_data(base_folder: Path, data_folder: Path):
@@ -20,12 +22,7 @@ def extract_data(base_folder: Path, data_folder: Path):
 def run_extract(import_job_pk: int):
     """Extracts uploaded archives and preprocesses data into JSON format for a given proteome."""
 
-    base_folder = (
-        Path(settings.BASE_DIR)
-        / settings.MEDIA_ROOT
-        / "import_job"
-        / str(import_job_pk)
-    )
+    base_folder = get_base_folder(import_job_pk)
     data_folder = base_folder / "data"
     json_path = base_folder / "data.json"
 
@@ -35,7 +32,17 @@ def run_extract(import_job_pk: int):
     return json_path
 
 
-def run_info(json_path: Path):
+def get_base_folder(import_job_pk: int):
+    base_folder = (
+        Path(settings.BASE_DIR)
+        / settings.MEDIA_ROOT
+        / "import_job"
+        / str(import_job_pk)
+    )
+    return base_folder
+
+
+def run_info(json_path: Path) -> Dict[str, pd.DataFrame]:
     """Preprocesses data from JSON into info-containing data frames for a given proteome."""
 
     df_source, df_seq = read_json(json_path)
@@ -50,6 +57,16 @@ def run_info(json_path: Path):
     results.update(extract_rbased(df_source, df_seq))
 
     return results
+
+
+def store(results: Dict[str, pd.DataFrame], path: Path):
+    with open(path, "wb") as f:
+        pickle.dump(results, f)
+
+
+def load(path: Path) -> Dict[str, pd.DataFrame]:
+    with open(path, "rb") as f:
+        return pickle.load(f)
 
 
 if __name__ == "__main__":

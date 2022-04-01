@@ -1,15 +1,21 @@
-from typing import Dict, Tuple
-import pandas as pd
 from collections import defaultdict
-from ppprint.visualization import PLOTS
-from ppprint.models import VisualizationJob
-from django.conf import settings
-from pathlib import Path
 from itertools import chain
+from pathlib import Path
+from typing import Dict, Tuple
+
+import pandas as pd
+from django.conf import settings
+
+from ppprint.models import VisualizationJob
+from ppprint.visualization import PLOTS
 
 
 def run(visualization_job_pk: int, data: Dict[int, Dict[str, pd.DataFrame]]):
-    result = defaultdict(pd.DataFrame)
+    result_dict, mapping, base_folder = prepare(visualization_job_pk, data)
+    run_plotting(result_dict, mapping, base_folder)
+
+
+def prepare(visualization_job_pk: int, data: Dict[int, Dict[str, pd.DataFrame]]):
     vj = VisualizationJob.objects.get(pk=visualization_job_pk)
 
     mapping = {}
@@ -46,13 +52,7 @@ def run(visualization_job_pk: int, data: Dict[int, Dict[str, pd.DataFrame]]):
         # Add chosen color to used_colors in order to find a new one for the next proteome
         used_colors.add(color[0])
 
-    # Add proteome IDs (pks) to dataframe and build big source type df with all requested proteomes
-    for proteome_id, dataset in data.items():
-        for source_type, df in dataset.items():
-            df["proteome"] = proteome_id
-            result[source_type] = pd.concat(
-                [result[source_type], df], ignore_index=True
-            )
+    result = concat_proteomes(data)
 
     base_folder = (
         Path(settings.BASE_DIR)
@@ -62,7 +62,21 @@ def run(visualization_job_pk: int, data: Dict[int, Dict[str, pd.DataFrame]]):
     )
     base_folder.mkdir(exist_ok=True, parents=True)
 
-    run_plotting(dict(result), mapping, base_folder)
+    return dict(result), mapping, base_folder
+    # run_plotting(dict(result), mapping, base_folder)
+
+
+def concat_proteomes(data):
+    """Adds proteome IDs (pks) to dataframe and builds big source type df with all requested proteomes."""
+
+    result = defaultdict(pd.DataFrame)
+    for proteome_id, dataset in data.items():
+        for source_type, df in dataset.items():
+            df["proteome"] = proteome_id
+            result[source_type] = pd.concat(
+                [result[source_type], df], ignore_index=True
+            )
+    return result
 
 
 def run_plotting(

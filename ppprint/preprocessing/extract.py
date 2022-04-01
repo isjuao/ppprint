@@ -1,10 +1,9 @@
-from pathlib import Path
-
-import pandas as pd
-import numpy as np
-
 import json
-from typing import List, Optional, Tuple, Dict
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
 
 
 def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
