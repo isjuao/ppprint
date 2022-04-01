@@ -1,10 +1,10 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Set, Tuple
 from pathlib import Path
-import pandas as pd
+from typing import Dict, Set, Tuple
+
 import matplotlib.pyplot as plt
-import logging
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,9 @@ class Plot(ABC):
 
     def run(self):
         # clear plot TODO object oriented?
+        plt.style.use("seaborn-whitegrid")
         plt.clf()
+        plt.figure().clf()
         plt.cla()
         self._run(self.get_df())
         self.set_title()
@@ -61,4 +63,11 @@ class Plot(ABC):
     def rename_legend(self, ax):
         leg = ax.get_legend()
         # proteome pk order in legend = proteome pk order in df = proteome pk order in mapping
-        ax.legend(handles=leg.legendHandles, labels=self.get_proteome_names().values())
+        ax.legend(
+            handles=leg.legendHandles,
+            labels=self.get_proteome_names().values(),
+            frameon=True,
+            fancybox=True,
+            framealpha=0.8,
+            facecolor="white",
+        )
