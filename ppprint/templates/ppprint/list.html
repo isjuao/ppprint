@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% block title %}- {% trans "listing" %}{% endblock title %}
 {% block content %}
+    <h1>{% trans "VisualizationJobs" %}</h1>
+    <table class="table">
+    <thead>
+    <tr>
+        <th>{% trans "Job ID" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Creation Date" %}</th>
+    </tr>
+    </thead>
+    <tbody>
     {% for job in jobs %}
-        <a href="{% url "visualization" pk=job.pk %}">
-        {{ job.get_status_display }}
-        {{ job.pk }}
-        </a>
+        <tr>
+            <td><a href="{% url "visualization" pk=job.pk %}">{{ job.pk }}</a></td>
+            <td>{{ job.get_status_display }}</td>
+            <td>{{ job.created_at }}</td>
+        </tr>
     {% endfor %}
+    </tbody>
+    </table>
+
 {% endblock content %}

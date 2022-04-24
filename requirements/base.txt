@@ -21,3 +21,4 @@ wcwidth==0.2.5
 redis==4.1.4
 pandas==1.4.1
 numpy==1.22.2
+crispy-bootstrap5==0.6

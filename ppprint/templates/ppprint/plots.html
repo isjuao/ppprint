@@ -1,6 +1,41 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
 {% block content %}
-    {% for plot in mapping %}
-        <img src="{{ plot.0 }}">
-    {% endfor %}
+    <br>
+    <h1>{% trans "Visualization" %} - {{ view|capfirst }}</h1>
+    <br>
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-link {% if view == "overview" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}">{% trans "Overview" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == "mdisorder" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}?view=mdisorder">{% trans "Mdisorder" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == "tmseg" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}?view=tmseg">{% trans "Tmseg" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == "prona" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}?view=prona">{% trans "Prona" %}</a>
+        </li>
+    </ul>
+    <br>
+    <div class="row gy-3">
+        {% for plot in mapping %}
+            <div class="col-12 col-lg-6 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        {{ plot.1 }}
+                    </div>
+                    <div class="card-body">
+                        <img src="{{ plot.0 }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock content %}

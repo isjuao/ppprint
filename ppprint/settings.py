@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-#5&)_#&=#3--kx^j0lmh@%*2a79$q7xd0=sxxle=13&=z&_t2#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "celery",
     "ppprint",
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,7 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 86400}
 CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_SEND_SENT_EVENT = True
+
+# Bootstrap
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

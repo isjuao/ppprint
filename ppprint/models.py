@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional, Tuple
 
 from django.db import models
@@ -16,6 +17,9 @@ class StatusChoices(models.TextChoices):
 class Job(models.Model):
     status = models.CharField(
         max_length=7, choices=StatusChoices.choices, default=StatusChoices.CREATED
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
     )
 
     class Meta:

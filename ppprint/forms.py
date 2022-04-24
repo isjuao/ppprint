@@ -1,3 +1,4 @@
+from crispy_forms.helper import FormHelper
 from django import forms
 
 from ppprint.models import ImportJob, StatusChoices, VisualizationJob
@@ -5,6 +6,11 @@ from ppprint.validators import limit_num_choices, validate_color
 
 
 class UploadForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
     name = forms.CharField(max_length=200)
     file = forms.FileField()
     color = forms.CharField(
@@ -20,6 +26,11 @@ class UploadForm(forms.Form):
 
 
 class SelectionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
     sources = forms.ModelMultipleChoiceField(
         queryset=ImportJob.objects.filter(status=StatusChoices.SUCCESS),
         validators=[limit_num_choices(4)],
