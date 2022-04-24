@@ -68,9 +68,7 @@ class RSpectrumPlotMdisorder(Plot):
             current_color = colors[p]
 
             # Plot means and CIs as shadow
-            y = -df_grouped[df_grouped["proteome"] == p][
-                "mean"
-            ]
+            y = -df_grouped[df_grouped["proteome"] == p]["mean"]
             y_none = [None if val == 0 else val for val in y]
             x = df_grouped[df_grouped["proteome"] == p]["y"]
             ax1.plot(
@@ -174,7 +172,7 @@ class RSpectrumPlotMdisorder(Plot):
         y = -1.6 * abs(x) + 1.3  # old: y = -2 * abs(x) + 1.5
         ax.fill_between(x, 0, y, color=fill_color, zorder=0)
         # Between prok/prok and mixed
-        y = -2.6 * abs(x) + 2.0   # old: y = -3 * abs(x) + 2.5
+        y = -2.6 * abs(x) + 2.0  # old: y = -3 * abs(x) + 2.5
         ax.fill_between(x, 0, y, color=fill_color, zorder=0)
 
         extra_legend = ax.legend(

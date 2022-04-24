@@ -19,7 +19,9 @@ def retry_with_latin(f: Callable[..., List]):
             return f(path)
         except UnicodeDecodeError:
             # If not utf-8, retry with latin-1
-            logger.warning(f"File encoding is not utf-8, retrying with latin-1 for {path}")
+            logger.warning(
+                f"File encoding is not utf-8, retrying with latin-1 for {path}"
+            )
             return f(path, encoding="latin-1")
 
     return inner
@@ -238,8 +240,8 @@ def parse_mdisorder(path: Path, encoding="utf-8") -> List:
 @retry_with_latin
 def parse_reprof(path: Path, encoding="utf-8") -> List:
     """
-        Parses a given reprof file.
-        Only the structure information is retained.
+    Parses a given reprof file.
+    Only the structure information is retained.
     """
     num_col = -1
     structure = []

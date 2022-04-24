@@ -46,7 +46,7 @@ MDISORDER = [
     RLengthDistributionPlotRelMdisorder,
     RLengthDistributionPlotAbsMdisorder,
     RPointLinePlotMdisorder,
-    RSpectrumPlotMdisorder,   # first set max num choices validator in ppprint/forms.py!
+    RSpectrumPlotMdisorder,  # first set max num choices validator in ppprint/forms.py!
     PContentPerProteomePlotMdisorder,
     PCompositionPerProteomePlotMdisorder,
     PNumberOfRegionsMdisorder,

@@ -26,8 +26,11 @@ def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
             seq = p["sequence"]
             sequences.append(seq)
             # TODO: add features here!
-            for feature in ["tmseg", "mdisorder", "prona", # "reprof"
-                            ]:
+            for feature in [
+                "tmseg",
+                "mdisorder",
+                "prona",  # "reprof"
+            ]:
                 for region in p[feature]:
                     yield (
                         i,
@@ -231,16 +234,14 @@ def extract_pbased_reprof(df_source: pd.DataFrame, *args, **kwargs):
     # Calculate additional region contents per region type
     region_type_counts = (
         df_source.groupby(["protein", "description"])["region length"]
-            .sum()
-            .unstack(level=-1)
+        .sum()
+        .unstack(level=-1)
     )
 
     df_new = df_new.join(region_type_counts, how="left").fillna(0)
     df_new = ensure_exists(region_classes, df_new)
     for region_class in region_classes:
-        df_new[f"{region_class}"] = (
-                df_new[f"{region_class}"] / df_new["protein length"]
-        )
+        df_new[f"{region_class}"] = df_new[f"{region_class}"] / df_new["protein length"]
 
     df_new = df_new.rename(
         columns={
@@ -294,10 +295,7 @@ def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
             extract_pbased_prona,
             {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]},
         ),
-        "reprof": (
-            extract_rbased_reprof,
-            {"minlength": 4, "region_type": ["Helix"]}
-        )
+        "reprof": (extract_rbased_reprof, {"minlength": 4, "region_type": ["Helix"]}),
     }
     results = {}
 
@@ -411,8 +409,8 @@ def extract_rbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
         ),
         "reprof": (
             extract_rbased_reprof,
-            {"minlength": 4, "region_type": ["Helix", "Strand"]}
-        )
+            {"minlength": 4, "region_type": ["Helix", "Strand"]},
+        ),
     }
     results = {}
 

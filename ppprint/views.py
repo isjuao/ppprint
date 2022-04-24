@@ -60,4 +60,12 @@ def detail_visualization_job(request, pk):
     mapping = [
         (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME) for cls in plot_classes
     ]
-    return render(request, "ppprint/plots.html", {"job": vj, "mapping": mapping, "view": view,})
+    return render(
+        request,
+        "ppprint/plots.html",
+        {
+            "job": vj,
+            "mapping": mapping,
+            "view": view,
+        },
+    )
