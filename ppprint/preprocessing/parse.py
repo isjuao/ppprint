@@ -1,19 +1,34 @@
 """
 Parses some predict protein output.
-This is mostly copypasta of `pp_to_json.py`, but for whole proteomes tailored to be used by ppprint.
+This is mostly copypasta of `pp_to_json.py`, but for whole proteomes,
+tailored to be used by ppprint.
 """
 
 import json
 import logging
 from itertools import chain, groupby
 from pathlib import Path
-from typing import List
+from typing import List, Callable
 
 logger = logging.getLogger(__name__)
 
 
+def retry_with_latin(f: Callable[..., List]):
+    def inner(path, encoding="utf-8") -> List:
+        try:
+            return f(path)
+        except UnicodeDecodeError:
+            # If not utf-8, retry with latin-1
+            logger.warning(f"File encoding is not utf-8, retrying with latin-1 for {path}")
+            return f(path, encoding="latin-1")
+
+    return inner
+
+
 def group_segments(annotation):
-    """Groups all consecutive elements of the same value in an annotation string and records the positions."""
+    """Groups all consecutive elements of the same value in
+    an annotation string and records the positions.
+    """
 
     position = 1
 
@@ -63,6 +78,7 @@ def get_sequence(path: Path) -> str:
     return "".join(sequence)
 
 
+@retry_with_latin
 def parse_tmseg(path: Path, encoding="utf-8") -> List:
     """Parses a tmseg file."""
 
@@ -71,29 +87,20 @@ def parse_tmseg(path: Path, encoding="utf-8") -> List:
     sequence = None
     annotation = None
 
-    # Retry data encoding with latin-1 if utf-8 fails
-    try:
-        with path.open("r", encoding=encoding, errors="strict") as f:
-            for line in f.readlines():
-                if line.startswith("#"):
-                    continue
-                elif line.startswith(">"):
-                    header = line.strip()
-                elif header and sequence is None:
-                    sequence = line.strip()
-                elif sequence and annotation is None:
-                    annotation = line.strip()
-                else:
-                    break
-    except UnicodeDecodeError as exc:
-        # If not utf-8, retry with latin-1
-        if parse_tmseg.__kwdefaults__["encoding"] == encoding:
-            logger.warn(f"File encoding is not utf-8, retrying with latin-1 for {path}")
-            return parse_tmseg(path, encoding="latin-1")
-        else:
-            raise exc
+    with path.open("r", encoding=encoding, errors="strict") as f:
+        for line in f.readlines():
+            if line.startswith("#"):
+                continue
+            elif line.startswith(">"):
+                header = line.strip()
+            elif header and sequence is None:
+                sequence = line.strip()
+            elif sequence and annotation is None:
+                annotation = line.strip()
+            else:
+                break
 
-    if annotation is None or len(annotation) != len(sequence):
+    if not annotation or not sequence or len(annotation) != len(sequence):
         # Annotation string is not present or does not fit sequence
         return []
 
@@ -109,14 +116,15 @@ def parse_tmseg(path: Path, encoding="utf-8") -> List:
     return filter_segments(segments, type_dict)
 
 
-def parse_prona(path: Path) -> List:
+@retry_with_latin
+def parse_prona(path: Path, encoding="utf-8") -> List:
     """Parses a prona file."""
 
     prona_pro = []
     prona_dna = []
     prona_rna = []
 
-    with path.open("r") as input_file:
+    with path.open("r", encoding=encoding, errors="strict") as input_file:
         for line in input_file:
             if line.lstrip().startswith("Res_"):
                 data = line.split()
@@ -198,13 +206,14 @@ def parse_prona(path: Path) -> List:
     return filter_segments(segments, type_dict)
 
 
-def parse_mdisorder(path: Path) -> List:
+@retry_with_latin
+def parse_mdisorder(path: Path, encoding="utf-8") -> List:
     """Parses a given mdisorder file."""
 
     num_col = -1
     mdisorder = []
 
-    with path.open("r") as input_file:
+    with path.open("r", encoding=encoding, errors="strict") as input_file:
         for line in input_file:
             if num_col > 0:
                 data = line.split()
@@ -222,6 +231,41 @@ def parse_mdisorder(path: Path) -> List:
     segments = group_segments(mdisorder)
 
     type_dict = {"D": "Disordered Region"}
+
+    return filter_segments(segments, type_dict)
+
+
+@retry_with_latin
+def parse_reprof(path: Path, encoding="utf-8") -> List:
+    """
+        Parses a given reprof file.
+        Only the structure information is retained.
+    """
+    num_col = -1
+    structure = []
+
+    with path.open("r", encoding=encoding, errors="strict") as input_file:
+        for line in input_file:
+            if num_col > 0:
+                data = line.split()
+
+                if len(data) == num_col:
+                    structure.append(data[2])
+                else:
+                    break
+            elif line.lstrip().startswith("#"):
+                continue
+            elif line.lstrip().startswith("No"):
+                data = line.split()
+                num_col = len(data)
+
+    segments = group_segments(structure)
+
+    type_dict = {
+        "H": "Helix",
+        "E": "Strand",
+        "L": "Other",
+    }
 
     return filter_segments(segments, type_dict)
 
@@ -244,15 +288,17 @@ def parse_protein(base_path: Path, protein: str):
     tmseg = run(parse_tmseg, "tmseg")
     prona = run(parse_prona, "prona")
     mdisorder = run(parse_mdisorder, "mdisorder")
+    reprof = run(parse_reprof, "reprof")
 
-    return (sequence, tmseg, prona, mdisorder)
+    return (sequence, tmseg, prona, mdisorder, reprof)
 
 
 def parse(base_path: Path):
     """Parses sequence, tmseg, prona and mdisorder and returns a generator."""
 
     for p in (p for p in base_path.iterdir() if p.is_dir()):
-        # Identify the proteins based on the present .fasta files (required existence of a .fasta for each protein)
+        # Identify the proteins based on the present .fasta files
+        # (required existence of a .fasta for each protein)
         fasta_files = list(p.glob("*.fasta"))
         for protein in (p.stem for p in fasta_files):
             yield parse_protein(p, protein)
@@ -271,8 +317,9 @@ def write_json(base_path: Path, out_file: Path):
                 "tmseg": tmseg,
                 "prona": prona,
                 "mdisorder": mdisorder,
+                "reprof": reprof,
             }
-            for sequence, tmseg, prona, mdisorder in parse(base_path)
+            for sequence, tmseg, prona, mdisorder, reprof in parse(base_path)
         ]
 
         for chunk in json.JSONEncoder().iterencode(data):

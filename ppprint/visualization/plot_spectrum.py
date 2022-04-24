@@ -1,26 +1,27 @@
 import itertools
+import math
 import random
 
 import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import gridspec
 from scipy import stats
+from pathlib import Path
 
 from ppprint.visualization.plot import Plot
 
 
 class RSpectrumPlotMdisorder(Plot):
-    PLOT_NAME = "Spectrum of Disordered Regions"  # FIXME: Title for whole plot
+    PLOT_NAME = "Spectrum of Disordered Regions"
     SOURCE_TYPE = "mdisorder rbased"
     FILE_NAME = "mdisorder_r_spectrum"
 
     def collect_lists(self, df: pd.DataFrame):
         """Determines center and distance from start to center for each region and adds info to dataframe."""
 
-        # TODO: Flip x and y
         df["start"], df["end"] = zip(*df["point region"])
         df["y"] = df[["start", "end"]].mean(axis=1).round(decimals=2)
         df["x"] = -(df["y"] - df["start"])
@@ -69,7 +70,7 @@ class RSpectrumPlotMdisorder(Plot):
             # Plot means and CIs as shadow
             y = -df_grouped[df_grouped["proteome"] == p][
                 "mean"
-            ]  # TODO: Adjust when flipped
+            ]
             y_none = [None if val == 0 else val for val in y]
             x = df_grouped[df_grouped["proteome"] == p]["y"]
             ax1.plot(
@@ -104,9 +105,10 @@ class RSpectrumPlotMdisorder(Plot):
             handles=patches,
             fontsize="small",
             frameon=True,
+            fancybox=True,
+            framealpha=0.8,
+            facecolor="white",
         )
-        main_legend.get_frame().set_edgecolor("grey")
-        main_legend.get_frame().set_linewidth(0.5)
         ax1.add_artist(main_legend)
         ax1.set_title(
             "Width of DRs at Center Positions", pad=7, backgroundcolor=(0, 0, 0, 0.1)
@@ -156,9 +158,10 @@ class RSpectrumPlotMdisorder(Plot):
             loc="lower center",
             fontsize="small",
             frameon=True,
+            fancybox=True,
+            framealpha=0.8,
+            facecolor="white",
         )
-        cc_legend.get_frame().set_edgecolor("grey")
-        cc_legend.get_frame().set_linewidth(0.5)
         ax.add_artist(cc_legend)
 
     def plot_background(self, ax):
@@ -168,10 +171,10 @@ class RSpectrumPlotMdisorder(Plot):
         fill_color = (0, 0, 0, 0.05)
 
         # Between mixed and euk/euk
-        y = -2 * abs(x) + 1.5
+        y = -1.6 * abs(x) + 1.3  # old: y = -2 * abs(x) + 1.5
         ax.fill_between(x, 0, y, color=fill_color, zorder=0)
         # Between prok/prok and mixed
-        y = -3 * abs(x) + 2.5
+        y = -2.6 * abs(x) + 2.0   # old: y = -3 * abs(x) + 2.5
         ax.fill_between(x, 0, y, color=fill_color, zorder=0)
 
         extra_legend = ax.legend(
@@ -186,9 +189,10 @@ class RSpectrumPlotMdisorder(Plot):
             loc="upper right",
             fontsize="small",
             frameon=True,
+            fancybox=True,
+            framealpha=0.8,
+            facecolor="white",
         )
-        extra_legend.get_frame().set_edgecolor("grey")
-        extra_legend.get_frame().set_linewidth(0.5)
         ax.add_artist(extra_legend)
 
     def _run(self, df: pd.DataFrame):
@@ -237,7 +241,6 @@ class RSpectrumPlotMdisorder(Plot):
         # Insert background into CC plot
         self.plot_background(ax2)
 
-        # TODO: Maybe assign colors based on kingdom
         # kingdom_colors = get_kingdom_colors()
         # colors = [kingdom_colors[v] for v in quadruple]
         # alphas = self.calc_alphas(df, combination)
@@ -247,3 +250,9 @@ class RSpectrumPlotMdisorder(Plot):
         fig.tight_layout(pad=2)
         colors = self.get_color_scheme()
         self.plot_spectrum(ax1, df_grouped, colors, names, proteomes)
+
+    # def store_plot(self):
+    #     """Storing routine for thesis document. ^^"""
+    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
+    #     # plt.show()
+    #     plt.savefig(out / "mdisorder_spectrum_2.pdf", bbox_inches="tight")

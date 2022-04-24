@@ -1,3 +1,9 @@
+"""
+Provides functionalities for testing in local Django shell.
+For testing, import respective `Plot` subclass and `test_plots`.
+Call `test_plots` with desired `VisualizationJob` pk and plot class.
+"""
+
 from pathlib import Path
 
 from django.conf import settings

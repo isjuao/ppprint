@@ -1,3 +1,7 @@
+"""
+Contains all `Plot` subclasses to be displayed in ppprint.
+"""
+
 from ppprint.visualization.plot_content_proteome import (
     PCompositionPerProteomePlotMdisorder,
     PContentPerProteomePlotMdisorder,
@@ -29,14 +33,23 @@ from ppprint.visualization.plot_points import (
     RPointLinePlotTmseg,
 )
 from ppprint.visualization.plot_spectrum import RSpectrumPlotMdisorder
+from ppprint.visualization.plot_proteome_sizes import PProteomeSizes
+from ppprint.visualization.plot_num_regions import (
+    PNumberOfRegionsMdisorder,
+    PNumberOfRegTopoTmseg,
+    PNumberOfRegionsTmseg,
+    PNumberOfRegionsProna,
+)
+
 
 MDISORDER = [
     RLengthDistributionPlotRelMdisorder,
     RLengthDistributionPlotAbsMdisorder,
     RPointLinePlotMdisorder,
-    RSpectrumPlotMdisorder,
+    RSpectrumPlotMdisorder,   # first set max num choices validator in ppprint/forms.py!
     PContentPerProteomePlotMdisorder,
     PCompositionPerProteomePlotMdisorder,
+    PNumberOfRegionsMdisorder,
 ]
 TMSEG = [
     RLengthDistributionPlotRelTmseg,
@@ -47,6 +60,8 @@ TMSEG = [
     PContentPerProteomePlotTmseg,
     PResidueFractionsBarsTmseg,
     PResidueFractionsViolinsTmseg,
+    PNumberOfRegionsTmseg,
+    PNumberOfRegTopoTmseg,
 ]
 PRONA = [
     RLengthDistributionPlotRelProna,
@@ -55,9 +70,11 @@ PRONA = [
     PBindingElementsPlotProna,
     PContentPerProteomePlotProna,
     PProtClassFractionsProna,
+    PNumberOfRegionsProna,
 ]
-COMBINED = [
+ALL = [
     PLengthDistributionPlot,
+    PProteomeSizes,
 ]
 
-PLOTS = MDISORDER + TMSEG + PRONA + COMBINED
+PLOTS = MDISORDER + TMSEG + PRONA + ALL

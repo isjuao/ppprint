@@ -1,6 +1,7 @@
 from abc import abstractmethod
+from pathlib import Path
 
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -30,7 +31,7 @@ class PResidueFractionsTmseg(Plot):
         ax1.set_ylabel("Frequency")
         ax1.set_xlabel("Proteome")
         names = self.get_proteome_names()
-        ax1.set_xticklabels(labels=names.values())
+        ax1.set_xticklabels(labels=names.values(), fontsize=7)
         ax1.legend(
             bbox_to_anchor=(1.01, 1),
             borderaxespad=0.0,
@@ -79,6 +80,13 @@ class PResidueFractionsViolinsTmseg(PResidueFractionsTmseg):
             cut=0,
         )
 
+    # def store_plot(self):
+    #     """Storing routine for thesis document. ^^"""
+    #     fig = plt.gcf()
+    #     fig.set_size_inches(7, 3.5)
+    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
+    #     plt.savefig(out / "tmseg_p_res_fractions_violins.pdf", bbox_inches="tight")
+
 
 class PProtClassFractionsProna(Plot):
     PLOT_NAME = "Fraction of DNA/RNA/Protein Binding Proteins"
@@ -122,7 +130,7 @@ class PProtClassFractionsProna(Plot):
         ax1.set_ylabel("Frequency")
         ax1.set_xlabel("Proteome")
         names = self.get_proteome_names()
-        ax1.set_xticklabels(labels=names.values())
+        ax1.set_xticklabels(labels=names.values(), fontsize=8)
         mol_categories = ["DNA binding", "RNA binding", "Protein binding"]
         leg = ax1.legend()
         ax1.legend(
@@ -133,3 +141,11 @@ class PProtClassFractionsProna(Plot):
             framealpha=0.8,
             facecolor="white",
         )
+
+    def store_plot(self):
+        """Storing routine for thesis document. ^^"""
+        fig = plt.gcf()
+        fig.set_size_inches(8, 3.5)
+        # plt.show()
+        out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
+        plt.savefig(out / "tmseg_prot_fractions.pdf", bbox_inches="tight")

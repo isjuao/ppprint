@@ -1,3 +1,9 @@
+"""
+Extracts info from proteome JSON into dataframes
+split by feature and base (region/protein).
+"""
+
+
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -19,7 +25,9 @@ def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
         for i, p in enumerate(data):
             seq = p["sequence"]
             sequences.append(seq)
-            for feature in ["tmseg", "mdisorder", "prona"]:
+            # TODO: add features here!
+            for feature in ["tmseg", "mdisorder", "prona", # "reprof"
+                            ]:
                 for region in p[feature]:
                     yield (
                         i,
@@ -117,7 +125,6 @@ def extract_pbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
         if first == 0:
             # The first region is the helix -> N-terminus of protein is in membrane
             return "Membrane"
-        # TODO: check what happens if signal peptide is immediately before first TMH
         return str(df.at[first - 1, "description"])
 
     # Filter to TMPs, because it is possible that regions of proteins without TMH are in df_source, need orientation 0
@@ -204,6 +211,48 @@ def extract_pbased_prona(df_source: pd.DataFrame, *args, **kwargs):
     return df_new
 
 
+def extract_pbased_reprof(df_source: pd.DataFrame, *args, **kwargs):
+    region_classes = ["Helix", "Strand", "Other"]
+
+    print(df_source.head)
+
+    # Filter all regions based on allowed categories (should already be this way)
+    df_source = df_source[df_source["description"].isin(region_classes)]
+
+    # Filter (all) regions based on minlength requirement
+    minlength = kwargs.pop("minlength")
+    df_source = df_source[df_source["region length"] >= minlength]
+
+    df_new = extract_pbased_all(df_source, *args, **kwargs)
+
+    # Calculate region content as last step, when (correct) lengths of all proteins got collected
+    df_new["region content"] = df_new["sum region lengths"] / df_new["protein length"]
+
+    # Calculate additional region contents per region type
+    region_type_counts = (
+        df_source.groupby(["protein", "description"])["region length"]
+            .sum()
+            .unstack(level=-1)
+    )
+
+    df_new = df_new.join(region_type_counts, how="left").fillna(0)
+    df_new = ensure_exists(region_classes, df_new)
+    for region_class in region_classes:
+        df_new[f"{region_class}"] = (
+                df_new[f"{region_class}"] / df_new["protein length"]
+        )
+
+    df_new = df_new.rename(
+        columns={
+            "Helix": "H",
+            "Strand": "E",
+            "Other": "O",
+        }
+    )
+
+    return df_new
+
+
 def extract_pbased_all(
     df_source: pd.DataFrame,
     df_seq: pd.DataFrame,
@@ -232,10 +281,9 @@ def extract_pbased_all(
 
 
 def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
-    """TODO"""
+    """Maps required extraction parameters to each feature and collects p-based extraction results."""
 
     # Store function and required params for each feature
-    # TODO: Is region type for prona (PBASED!) really required, if actually never used this far?
     mapping = {
         "tmseg": (
             extract_pbased_tmseg,
@@ -246,6 +294,10 @@ def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
             extract_pbased_prona,
             {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]},
         ),
+        "reprof": (
+            extract_rbased_reprof,
+            {"minlength": 4, "region_type": ["Helix"]}
+        )
     }
     results = {}
 
@@ -297,6 +349,12 @@ def extract_rbased_prona(df_source: pd.DataFrame, *args, **kwargs):
     return df_new
 
 
+def extract_rbased_reprof(df_source: pd.DataFrame, *args, **kwargs):
+
+    df_new = extract_rbased_all(df_source, *args, **kwargs)
+    return df_new
+
+
 def extract_rbased_all(
     df_source: pd.DataFrame,
     df_seq: pd.DataFrame,
@@ -338,7 +396,7 @@ def extract_rbased_all(
 
 
 def extract_rbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
-    """TODO"""
+    """Maps required extraction parameters to each feature and collects r-based extraction results."""
 
     # Store function and required params for each feature
     mapping = {
@@ -351,6 +409,10 @@ def extract_rbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
             extract_rbased_prona,
             {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]},
         ),
+        "reprof": (
+            extract_rbased_reprof,
+            {"minlength": 4, "region_type": ["Helix", "Strand"]}
+        )
     }
     results = {}
 

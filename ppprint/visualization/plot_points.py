@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns

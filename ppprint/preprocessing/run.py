@@ -1,3 +1,7 @@
+"""
+Runs preprocessing of raw upload data.
+"""
+
 import pickle
 import tarfile
 from pathlib import Path
@@ -48,7 +52,7 @@ def run_info(json_path: Path) -> Dict[str, pd.DataFrame]:
     df_source, df_seq = read_json(json_path)
 
     results = {}
-    # will contain both pbased and rbased results for each feature, for the given proteome
+    # Will contain both pbased and rbased results for each feature, for the given proteome
 
     # Protein-level extraction
     results.update(extract_pbased(df_source, df_seq))
@@ -69,9 +73,10 @@ def load(path: Path) -> Dict[str, pd.DataFrame]:
         return pickle.load(f)
 
 
-if __name__ == "__main__":
-    # comment out django imports first
-    example_json_path = Path(
-        "/home/isabell/work/python/thesis/ppprint/media/import_job/3/data.json"
-    )
-    run_info(example_json_path)
+# if __name__ == "__main__":
+#     # For local testing only
+#     # Comment out django imports first
+#     example_json_path = Path(
+#         "/home/isabell/work/python/thesis/ppprint/media/import_job/1/data.json"
+#     )
+#     run_info(example_json_path)

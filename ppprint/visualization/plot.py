@@ -1,3 +1,8 @@
+"""
+Provides all basic required functionalities for plotting.
+All plots to be used by ppprint have to correspond to subclasses of `Plot`.
+"""
+
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -52,7 +57,7 @@ class Plot(ABC):
 
     def store_plot(self):
         out_path = self.base_folder / f"{self.FILE_NAME}.png"
-        plt.savefig(out_path, dpi=200)
+        plt.savefig(out_path, dpi=200, bbox_inches="tight")
 
     def get_color_scheme(self):
         return {key: value[1] for key, value in self.proteome_mapping.items()}

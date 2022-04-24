@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 
 from ppprint.visualization.plot import Plot
-
-# TODO: what about KL -> show optionally? always?
 
 
 class PLengthDistributionPlot(Plot):
@@ -18,11 +16,10 @@ class PLengthDistributionPlot(Plot):
     def _run(self, df: pd.DataFrame):
         ax1 = plt.subplot()
 
-        arg = "protein length"
         bins = np.arange(start=0, stop=2540, step=40)
         ax1 = sns.histplot(
             data=df,
-            x=arg,
+            x="protein length",
             hue="proteome",
             palette=self.get_color_scheme(),
             kde=True,
@@ -119,7 +116,7 @@ class RLengthDistributionPlotAbsProna(RLengthDistributionPlot):
     FILE_NAME = "prona_r_length_hist_abs"
     RELATIVE = False
     MINLENGTH = 6
-    MAXLENGTH = 50  # TODO search best cutoff
+    MAXLENGTH = 50
     STEPSIZE = 1
     BW_ADJUST: float = 0.7
 

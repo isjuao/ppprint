@@ -1,6 +1,7 @@
 from abc import ABC
+from pathlib import Path
 
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
@@ -28,7 +29,7 @@ class RContentPerProteomePlot(Plot, ABC):
 
         ax1.set_xlabel("Proteome")
         ax1.set_ylabel("Fraction of Region Residues")
-        ax1.set_xticklabels(labels=names.values())
+        ax1.set_xticklabels(labels=names.values(), fontsize=7)
 
 
 class PContentPerProteomePlot(Plot):
@@ -60,29 +61,29 @@ class PContentPerProteomePlot(Plot):
         )
         ax1.set_xlabel("Proteome")
         ax1.set_ylabel("Fraction of Region Residues")
-        ax1.set_xticklabels(labels=names.values())
+        ax1.set_xticklabels(labels=names.values(), fontsize=7)
 
 
 class PContentPerProteomePlotMdisorder(PContentPerProteomePlot):
-    PLOT_NAME = "Disorder Content per Proteome"
+    PLOT_NAME = "Disorder Content Per Proteome"
     SOURCE_TYPE = "mdisorder pbased"
     FILE_NAME = "mdisorder_p_content_proteome"
 
 
 class PContentPerProteomePlotTmseg(PContentPerProteomePlot):
-    PLOT_NAME = "TMH Content per Proteome"
+    PLOT_NAME = "TMH Content Per Proteome"
     SOURCE_TYPE = "tmseg pbased"
     FILE_NAME = "tmseg_p_content_proteome"
 
 
 class PContentPerProteomePlotProna(PContentPerProteomePlot):
-    PLOT_NAME = "Binding Content per Proteome"
+    PLOT_NAME = "Binding Content Per Proteome"
     SOURCE_TYPE = "prona pbased"
     FILE_NAME = "prona_p_content_proteome"
 
 
 class PCompositionPerProteomePlotMdisorder(Plot):
-    PLOT_NAME = "Percentage of Proteins With at Least One DR"
+    PLOT_NAME = "Fraction of Proteins With at Least One DR"
     SOURCE_TYPE = "mdisorder pbased"
     FILE_NAME = "mdisorder_p_composition"
 
@@ -113,4 +114,4 @@ class PCompositionPerProteomePlotMdisorder(Plot):
 
         ax1.set_xlabel("Proteome")
         ax1.set_ylabel("Fraction")
-        ax1.set_xticklabels(labels=names.values())
+        ax1.set_xticklabels(labels=names.values(), fontsize=8, rotation=20)

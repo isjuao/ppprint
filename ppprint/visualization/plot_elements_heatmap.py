@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt  # TODO: how to get plt object (new one for every plot or clear!)
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -22,11 +22,14 @@ class PBindingElementsPlotProna(Plot):
         n = len(proteomes)
         names = self.get_proteome_names()
 
-        # gs = gridspec.GridSpec(nrows=int((n + 2) / 3), ncols=3)
-        gs = gridspec.GridSpec(nrows=int((n + 1) / 2), ncols=2)
         fig = plt.figure()
+        # 3 columns
+        # gs = gridspec.GridSpec(nrows=int((n + 2) / 3), ncols=3)
         # fig.set_size_inches(10, int((n + 2) / 3) * 3.3)
+        # 2 columns
+        gs = gridspec.GridSpec(nrows=int((n + 1) / 2), ncols=2)
         fig.set_size_inches(7, int((n + 1) / 2) * 3)
+
         fig.subplots_adjust(top=0.82)
         plt.tight_layout()
         # plt.tight_layout(pad=0, w_pad=0.5, h_pad=0.5)

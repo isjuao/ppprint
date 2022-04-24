@@ -1,3 +1,8 @@
+"""
+Collects dataframes for all proteomes required by the comparison
+and runs plotting of all `Plot` subclasses.
+"""
+
 from collections import defaultdict
 from itertools import chain
 from pathlib import Path
