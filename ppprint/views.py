@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render, reverse
 from ppprint.forms import SelectionForm, UploadForm
 from ppprint.models import ImportJob, VisualizationJob
 from ppprint.tasks import run_import_job, run_visualization_job
-from ppprint.visualization import ALL, MDISORDER, PLOTS, PRONA, TMSEG
+from ppprint.visualization import ALL, MDISORDER, PRONA, TMSEG, REPROF, COMBINED
 
 
 def home(request):
@@ -50,7 +50,14 @@ def list_visualization_jobs(request):
 
 def detail_visualization_job(request, pk):
     view = request.GET.get("view", "overview")
-    plots = {"overview": ALL, "mdisorder": MDISORDER, "tmseg": TMSEG, "prona": PRONA}
+    plots = {
+        "overview": ALL,
+        "mdisorder": MDISORDER,
+        "tmseg": TMSEG,
+        "prona": PRONA,
+        "reprof": REPROF,
+        "combined": COMBINED,
+    }
     try:
         plot_classes = plots[view]
     except KeyError:

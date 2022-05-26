@@ -16,7 +16,10 @@ def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Reads the proteome-specific JSON with all features into a dataframe with rows corresponding to regions."""
 
     with open(path, "r") as f:
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except:
+            print(f"Exception occured for {path}")
     sequences = []
 
     def get_data():
@@ -29,7 +32,8 @@ def read_json(path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
             for feature in [
                 "tmseg",
                 "mdisorder",
-                "prona",  # "reprof"
+                "prona",
+                "reprof",
             ]:
                 for region in p[feature]:
                     yield (

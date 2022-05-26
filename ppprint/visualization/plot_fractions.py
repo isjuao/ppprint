@@ -142,10 +142,10 @@ class PProtClassFractionsProna(Plot):
             facecolor="white",
         )
 
-    def store_plot(self):
-        """Storing routine for thesis document. ^^"""
-        fig = plt.gcf()
-        fig.set_size_inches(8, 3.5)
-        # plt.show()
-        out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
-        plt.savefig(out / "tmseg_prot_fractions.pdf", bbox_inches="tight")
+    # def store_plot(self):
+    #     """Storing routine for thesis document. ^^"""
+    #     fig = plt.gcf()
+    #     fig.set_size_inches(8, 3.5)
+    #     # plt.show()
+    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
+    #     plt.savefig(out / "tmseg_prot_fractions.pdf", bbox_inches="tight")

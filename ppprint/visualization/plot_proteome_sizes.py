@@ -1,8 +1,9 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from pathlib import Path
 
 from ppprint.visualization.plot import Plot
 
@@ -51,9 +52,9 @@ class PProteomeSizes(Plot):
             )
         plt.subplots_adjust(top=0.92, bottom=0.25, right=0.95)
 
-    def store_plot(self):
-        """Storing routine for thesis document. ^^"""
-        fig = plt.gcf()
-        fig.set_size_inches(6.4, 3.5)
-        out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
-        plt.savefig(out / "proteome_sizes.pdf", bbox_inches="tight")
+    # def store_plot(self):
+    #     """Storing routine for thesis document. ^^"""
+    #     fig = plt.gcf()
+    #     fig.set_size_inches(6.4, 3.5)
+    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
+    #     plt.savefig(out / "proteome_sizes.pdf", bbox_inches="tight")

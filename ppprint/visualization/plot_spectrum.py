@@ -1,6 +1,7 @@
 import itertools
 import math
 import random
+from pathlib import Path
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
@@ -9,7 +10,6 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import gridspec
 from scipy import stats
-from pathlib import Path
 
 from ppprint.visualization.plot import Plot
 

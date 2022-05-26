@@ -140,3 +140,115 @@ class RLengthDistributionPlotRelProna(RLengthDistributionPlot):
     SOURCE_TYPE = "prona rbased"
     FILE_NAME = "prona_r_length_hist_rel"
     BW_ADJUST: float = 0.8
+
+
+class RLengthsPlotAbsMdisorderProna(Plot):
+    PLOT_NAME = "Distribution of Lengths of Disordered PBRs"
+    SOURCE_TYPE = "mdisorder rbased"
+    FILE_NAME = "mixed_mdis_prona_r_dpbr_lengths"
+    BW_ADJUST: float = 0.2
+    RELATIVE = False
+    MINLENGTH = 6
+    MAXLENGTH = 51
+    STEPSIZE = 5
+
+    def overlap_for_pbr(self, df: pd.DataFrame):
+        # One protein in this df -> step through/check for each PBR
+        # Note: (1) this far, we used PBR length as number of residues to count (here we have RI)
+        #       (2) any overlap counts
+        df_pbr = df[df["feature"] == "prona"]
+        df_dr = df[df["feature"] == "mdisorder"]
+        num_res_in_drs = 0
+        res_in_drs_list = []
+        for i in df_pbr.index:
+            start = df_pbr.at[i, "start"]
+            end = df_pbr.at[i, "end"]
+            num_overlap = len(df_dr[~((df_dr["start"] > end) | (df_dr["end"] < start))])
+            if num_overlap > 0:
+                valid_length = end - start + 1
+                num_res_in_drs += valid_length
+                res_in_drs_list.append(valid_length)
+        return num_res_in_drs
+
+    def _run(self, df_mdisorder: pd.DataFrame):
+        fig, ax1 = plt.subplots()
+
+        df_prona = self.dataframes["prona rbased"]
+        df_sizes = (
+            self.dataframes["mdisorder pbased"][["proteome", "protein length"]]
+            .groupby("proteome")
+            .sum()
+        )
+
+        # Fraction of residues in DRs
+
+        df_mdisorder_counts = (
+            df_mdisorder[["proteome", "reg length"]].groupby(["proteome"]).sum()
+        )
+        df_mdisorder_counts = df_mdisorder_counts.join(
+            df_sizes, on="proteome", how="left"
+        )
+        df_mdisorder_counts["mdisorder content"] = (
+            df_mdisorder_counts["reg length"] / df_mdisorder_counts["protein length"]
+        )
+
+        # Fraction of disordered residues used in protein binding
+
+        df_mdisorder["feature"] = ["mdisorder"] * len(df_mdisorder)
+        df_prona["feature"] = ["prona"] * len(df_prona)
+        df_all = pd.concat([df_mdisorder, df_prona])
+        df_all["start"], df_all["end"] = zip(*df_all["region"])
+
+        # Calculate number of overlapping residues for each proteome
+        grouped = df_all.groupby(["proteome", "protein"])
+
+        overlap_series = grouped.apply(func=self.overlap_for_pbr)
+        overlap_series.name = "overlap"
+        hue = "proteome"
+        dpbrs = overlap_series[overlap_series.notnull()]
+        dpbrs = (
+            dpbrs.apply(pd.Series)
+            .reset_index()
+            .melt(id_vars=["proteome", "protein"])
+            .dropna()[["proteome", "protein", "value"]]
+        )
+
+        # bins = [6, 11, 16, 21, 26, 31, 41, 51, 101, max(111, max(dpbrs["value"]))]
+        bins = np.arange(
+            start=0, stop=self.MAXLENGTH + (0.5 * self.STEPSIZE), step=self.STEPSIZE
+        )
+        dpbrs = dpbrs.loc[dpbrs["value"] <= self.MAXLENGTH]
+
+        ax1 = sns.histplot(
+            data=dpbrs,
+            x="value",
+            hue=hue,
+            palette=self.get_color_scheme(),
+            bins=bins,
+            # kde=True,
+            kde_kws={
+                "bw_adjust": self.BW_ADJUST,
+                "bw_method": "scott",
+                "gridsize": 3000,
+                "clip": (self.MINLENGTH, self.MAXLENGTH),
+                # "common_grid": True, # not working
+            },
+            # common_grid=True, # not working
+            common_norm=False,
+            stat="proportion",
+            # edgecolor=(1.0, 1.0, 1.0, 0.5),
+            alpha=0.8,
+            fill=False,
+            edgecolor="k",
+            linewidth=1.5,
+            # cumulative=True,
+            ax=ax1,
+        )
+
+        ax1.set_title("Distribution of Lengths of Disordered PBRs")
+        ax1.set_xlabel("Binding Region Length")
+        ax1.set_xlim(right=self.MAXLENGTH)  # absolute lengths
+        ylim = ax1.get_ylim()
+        ax1.set_ylim(bottom=0.0, top=(ylim[1] + 0.01))
+        ax1.set_xticks(bins)
+        self.rename_legend(ax1)

@@ -22,6 +22,7 @@ from ppprint.visualization.plot_length_distribution import (
     RLengthDistributionPlotRelMdisorder,
     RLengthDistributionPlotRelProna,
     RLengthDistributionPlotRelTmseg,
+    RLengthsPlotAbsMdisorderProna,
 )
 from ppprint.visualization.plot_pie_charts import (
     POrientationsPlotTmseg,
@@ -31,6 +32,7 @@ from ppprint.visualization.plot_points import (
     RPointLinePlotMdisorder,
     RPointLinePlotProna,
     RPointLinePlotTmseg,
+    RPointLinePlotReprof,
 )
 from ppprint.visualization.plot_spectrum import RSpectrumPlotMdisorder
 from ppprint.visualization.plot_proteome_sizes import PProteomeSizes
@@ -40,6 +42,14 @@ from ppprint.visualization.plot_num_regions import (
     PNumberOfRegionsTmseg,
     PNumberOfRegionsProna,
 )
+from ppprint.visualization.plot_content_protein import (
+    PContentPerProteinPlotMdisorder,
+    PContentPerProteinPlotTmseg,
+    PContentPerProteinPlotProna,
+)
+from ppprint.visualization.plot_pbr_per_dr import RRegionPlotMdisorderProna
+from ppprint.visualization.plot_venn_overlap import POverlapPlotTmsegMdisorder
+from ppprint.visualization.plot_scatter_mixed import RScatterPlotMdisorderProna
 
 
 MDISORDER = [
@@ -50,6 +60,7 @@ MDISORDER = [
     PContentPerProteomePlotMdisorder,
     PCompositionPerProteomePlotMdisorder,
     PNumberOfRegionsMdisorder,
+    PContentPerProteinPlotMdisorder,
 ]
 TMSEG = [
     RLengthDistributionPlotRelTmseg,
@@ -62,6 +73,7 @@ TMSEG = [
     PResidueFractionsViolinsTmseg,
     PNumberOfRegionsTmseg,
     PNumberOfRegTopoTmseg,
+    PContentPerProteinPlotTmseg,
 ]
 PRONA = [
     RLengthDistributionPlotRelProna,
@@ -71,10 +83,20 @@ PRONA = [
     PContentPerProteomePlotProna,
     PProtClassFractionsProna,
     PNumberOfRegionsProna,
+    PContentPerProteinPlotProna,
+]
+REPROF = [
+    RPointLinePlotReprof,
 ]
 ALL = [
     PLengthDistributionPlot,
     PProteomeSizes,
 ]
+COMBINED = [
+    POverlapPlotTmsegMdisorder,
+    RLengthsPlotAbsMdisorderProna,
+    RRegionPlotMdisorderProna,
+    RScatterPlotMdisorderProna,
+]
 
-PLOTS = MDISORDER + TMSEG + PRONA + ALL
+PLOTS = MDISORDER + TMSEG + PRONA + REPROF + COMBINED + ALL

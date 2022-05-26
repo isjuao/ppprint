@@ -22,6 +22,14 @@
             <a class="nav-link {% if view == "prona" %}active{% endif %}"
                href="{% url "visualization" pk=job.pk %}?view=prona">{% trans "Prona" %}</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == "reprof" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}?view=reprof">{% trans "Reprof" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == "combined" %}active{% endif %}"
+               href="{% url "visualization" pk=job.pk %}?view=combined">{% trans "Combined Features" %}</a>
+        </li>
     </ul>
     <br>
     <div class="row gy-3">
