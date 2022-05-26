@@ -1,0 +1,33 @@
+#Protein level prediction
+#RI = Reliability index (score) for positive prediciton (-100~+100); Pred = Prediction (0,1)
+#	Protein_RI	Protein_Pred	DNA_RI	DNA_Pred	RNA_RI	RNA_Pred
+Protein_level	63	1	-100	0	-100	0
+
+
+
+
+#Residue level prediction
+#RI = Reliability index (score) for positive prediciton (-100~+100); Pred = Prediction (0,1)
+#	AA	Protein_RI	Protein_Pred	DNA_RI	DNA_Pred	RNA_RI	RNA_Pred
+Res_1	M	-15	0	0	0	0	0
+Res_2	M	5	1	0	0	0	0
+Res_3	P	8	1	0	0	0	0
+Res_4	T	17	1	0	0	0	0
+Res_5	I	7	1	0	0	0	0
+Res_6	F	16	1	0	0	0	0
+Res_7	F	8	1	0	0	0	0
+Res_8	A	6	1	0	0	0	0
+Res_9	G	3	1	0	0	0	0
+Res_10	I	-7	0	0	0	0	0
+Res_11	L	-10	0	0	0	0	0
+Res_12	I	-13	0	0	0	0	0
+Res_13	V	-11	0	0	0	0	0
+Res_14	T	5	1	0	0	0	0
+Res_15	T	25	1	0	0	0	0
+Res_16	I	35	1	0	0	0	0
+Res_17	V	46	1	0	0	0	0
+Res_18	Y	40	1	0	0	0	0
+Res_19	L	31	1	0	0	0	0
+Res_20	T	22	1	0	0	0	0
+Res_21	I	16	1	0	0	0	0
+Res_22	V	0	0	0	0	0	0

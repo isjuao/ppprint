@@ -1,0 +1,38 @@
+Number Residue NORSnet NORS2st PROFbval bval2st Ucon Ucon2st MD_raw   MD_rel  MD2st 
+    1	M	0.00	-	0.99	D	0.69	D	0.677	6	D
+    2	M	0.00	-	0.67	D	0.58	D	0.667	6	D
+    3	P	0.00	-	0.53	D	0.42	-	0.650	5	D
+    4	T	0.00	-	0.30	-	0.54	-	0.616	4	D
+    5	I	0.00	-	0.17	-	0.66	D	0.606	3	D
+    6	F	0.00	-	0.18	-	0.74	D	0.606	3	D
+    7	F	0.00	-	0.26	-	0.73	D	0.592	2	D
+    8	A	0.00	-	0.14	-	0.75	D	0.566	1	D
+    9	G	0.00	-	0.12	-	0.75	D	0.556	1	D
+   10	I	0.00	-	0.14	-	0.75	D	0.556	1	D
+   11	L	0.00	-	0.14	-	0.70	D	0.545	1	D
+   12	I	0.00	-	0.12	-	0.61	D	0.556	1	D
+   13	V	0.00	-	0.11	-	0.78	D	0.586	2	D
+   14	T	0.00	-	0.12	-	0.76	D	0.556	1	D
+   15	T	0.00	-	0.12	-	0.76	D	0.535	0	D
+   16	I	0.00	-	0.20	-	0.71	D	0.525	0	D
+   17	V	0.00	-	0.20	-	0.44	-	0.525	0	D
+   18	Y	0.00	-	0.10	-	0.38	-	0.556	1	D
+   19	L	0.00	-	0.26	-	0.51	-	0.586	2	D
+   20	T	0.00	-	0.47	D	0.70	D	0.480	1	-
+   21	I	0.00	-	0.68	D	0.58	D	0.505	0	-
+   22	V	0.02	-	0.83	D	0.48	-	0.505	0	-
+
+
+Key for output
+----------------
+Number - residue number
+Residue - amino-acid type
+NORSnet - raw score by NORSnet (prediction of unstructured loops)
+NORS2st - two-state prediction by NORSnet; D=disordered
+PROFbval - raw score by PROFbval (prediction of residue flexibility from sequence)
+Bval2st - two-state prediction by PROFbval
+Ucon - raw score by Ucon (prediction of protein disorder using predicted internal contacts)
+Ucon2st - two-state prediction by Ucon
+MD - raw score by MD (prediction of protein disorder using orthogonal sources)
+MD_rel - reliability of the prediction by MD; values range from 0-9. 9=strong prediction
+MD2st - two-state prediction by MD
