@@ -3,6 +3,7 @@ from django import forms
 
 from ppprint.models import ImportJob, StatusChoices, VisualizationJob
 from ppprint.validators import limit_num_choices, validate_color
+from django.forms import ModelMultipleChoiceField
 
 
 class UploadForm(forms.Form):
@@ -31,7 +32,11 @@ class SelectionForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
-    sources = forms.ModelMultipleChoiceField(
+    class MyModelMultipleChoiceField(ModelMultipleChoiceField):
+        def label_from_instance(self, obj):
+            return f"({obj.pk}) Proteome {obj.name}"
+
+    sources = MyModelMultipleChoiceField(
         queryset=ImportJob.objects.filter(status=StatusChoices.SUCCESS),
         validators=[limit_num_choices(4)],
     )

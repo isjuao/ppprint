@@ -51,6 +51,7 @@ class Plot(ABC):
         self._run(self.get_df())
         self.set_title()
         self.store_plot()
+        plt.close(plt.gcf())
 
     def set_title(self):
         plt.title(self.PLOT_NAME)

@@ -2,6 +2,7 @@
 Runs preprocessing of raw upload data.
 """
 
+import os
 import pickle
 import tarfile
 from pathlib import Path
@@ -18,6 +19,11 @@ from ppprint.preprocessing.parse import write_json
 def extract_data(base_folder: Path, data_folder: Path):
     """Unpacks .tar and .tar.gz files into job folders."""
     archive = next(base_folder.iterdir())
+
+    # If .pickle already present, but need new DataFrames
+    for item in base_folder.iterdir():
+        if not item.is_dir() and tarfile.is_tarfile(item):
+            archive = item
 
     with tarfile.open(archive, "r") as tf:
         tf.extractall(data_folder)

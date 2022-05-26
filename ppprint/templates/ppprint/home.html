@@ -1,6 +1,30 @@
-{% extends "base.html" %}
+    {% extends "base.html" %}
 {% load i18n %}
 
 {% block content %}
-
+    <br>
+    <div class="card w-100">
+      <div class="card-body">
+        <h4 class="card-title">Welcome to <span style="font-family:'Courier New'">ppprint</span>!</h4>
+          <br>
+        <h6 class="card-subtitle mb-2 text-muted">Required data structure</h6>
+        <p class="card-text" style="text-align: justify">
+            For a successful upload, <span style="font-family:'Courier New'">ppprint</span> expects a compressed version
+            of <a href="https://predictprotein.org/" class="card-link">PredictProtein</a> predictions. In the tar
+            archive, there must be one directory per prediction job (== per proteome split). Each directory must contain
+            the raw prediction files for each protein from the respective proteome split. Here, the prediction files for
+            a single sequence must include but are not limited to files of the following extensions:
+            <span style="font-family:'Courier New'">.fasta, .metadisorder, .tmseg, .prona, .reprof</span>.
+            For a short description of how this structure can be achieved, please read below.
+        </p>
+        <h6 class="card-subtitle mb-2 text-muted">Help</h6>
+        <p class="card-text" style="text-align: justify">
+            When running a local installation of PredictProtein, it is recommended to previously split the proteome
+            for which prediction is to be performed into smaller <span style="font-family:'Courier New'">.fasta</span>
+            files. Then, PredictProtein can be called for each <span style="font-family:'Courier New'">.fasta</span>
+            file and store result files into a separate folder. That way, the user should end up with a number of job
+            directories consisting of all prediction result files for each protein from the respective proteome split.
+        </p>
+      </div>
+    </div>
 {% endblock content %}
