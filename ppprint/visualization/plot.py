@@ -4,12 +4,15 @@ All plots to be used by ppprint have to correspond to subclasses of `Plot`.
 """
 
 import logging
+import math
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, Set, Tuple
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import pandas as pd
+from scipy import stats
 
 logger = logging.getLogger(__name__)
 
@@ -76,4 +79,33 @@ class Plot(ABC):
             fancybox=True,
             framealpha=0.8,
             facecolor="white",
+        )
+
+    def add_mean_to_legend(self, df, arg, ax):
+        """Calculates the mean and SEM of a column for each proteome and adds information to plot legend."""
+
+        df_means = df[["proteome", arg]].groupby("proteome").agg(["mean", stats.sem])
+        df_means.columns = df_means.columns.droplevel()
+
+        patches = []
+        colors = self.get_color_scheme()
+        names = self.get_proteome_names()
+
+        for p in pd.unique(df["proteome"]):
+            mean = df_means.at[p, "mean"]
+            sem = df_means.at[p, "sem"]
+            conf = -int(math.log10(abs(sem + math.exp(-12)))) + 1
+            patches.append(
+                mpatches.Patch(
+                    color=colors[p],
+                    label=f"{names[p]} [mean: {round(mean, conf)} +/- {round(sem, conf)}]",
+                )
+            )
+        ax.legend(
+            handles=patches,
+            frameon=True,
+            fancybox=True,
+            framealpha=0.8,
+            facecolor="white",
+            # fontsize=8,
         )

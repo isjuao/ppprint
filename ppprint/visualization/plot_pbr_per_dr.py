@@ -100,7 +100,8 @@ class RRegionPlotMdisorderProna(Plot):
         ax1.set_xlim(-0.5, x_rlim)
         ylim = ax1.get_ylim()
         ax1.set_ylim(bottom=0.0, top=(ylim[1] + 0.025))
-        self.rename_legend(ax1)
+        # self.rename_legend(ax1)
+        self.add_mean_to_legend(drs, "value", ax1)
 
         ax1.set_xlim(left=-0.5)
         ax1.set_ylim(top=1.05)
