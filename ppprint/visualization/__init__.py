@@ -8,11 +8,15 @@ from ppprint.visualization.plot_content_proteome import (
     PContentPerProteomePlotProna,
     PContentPerProteomePlotTmseg,
 )
-from ppprint.visualization.plot_elements_heatmap import PBindingElementsPlotProna
+from ppprint.visualization.plot_elements_heatmap import (
+    PBindingElementsPlotProna,
+    PSecStrElementsPlotReprof,
+)
 from ppprint.visualization.plot_fractions import (
     PProtClassFractionsProna,
     PResidueFractionsBarsTmseg,
     PResidueFractionsViolinsTmseg,
+    PResidueFractionsReprof,
 )
 from ppprint.visualization.plot_length_distribution import (
     PLengthDistributionPlot,
@@ -50,6 +54,7 @@ from ppprint.visualization.plot_content_protein import (
 from ppprint.visualization.plot_pbr_per_dr import RRegionPlotMdisorderProna
 from ppprint.visualization.plot_venn_overlap import POverlapPlotTmsegMdisorder
 from ppprint.visualization.plot_scatter_mixed import RScatterPlotMdisorderProna
+from ppprint.visualization.plot_content_relate import PContentRelatePlotReprof
 
 
 MDISORDER = [
@@ -87,6 +92,9 @@ PRONA = [
 ]
 REPROF = [
     RPointLinePlotReprof,
+    PSecStrElementsPlotReprof,
+    PResidueFractionsReprof,
+    PContentRelatePlotReprof,
 ]
 ALL = [
     PLengthDistributionPlot,

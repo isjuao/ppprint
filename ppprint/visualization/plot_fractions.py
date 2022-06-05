@@ -9,9 +9,10 @@ import seaborn as sns
 from ppprint.visualization.plot import Plot
 
 
-class PResidueFractionsTmseg(Plot):
-    PLOT_NAME = "Fraction of TMP Residues (I)nside/(M)embrane/(O)utside"
-    SOURCE_TYPE = "tmseg pbased"
+class PResidueFractions(Plot):
+    @abstractmethod
+    def configure(self, df: pd.DataFrame):
+        pass
 
     @abstractmethod
     def plotting(self, df_long: pd.DataFrame, ax1: plt.Axes):
@@ -20,10 +21,11 @@ class PResidueFractionsTmseg(Plot):
     def _run(self, df: pd.DataFrame):
         ax1 = plt.subplot()
 
-        df = df[df["number of regions"] > 0]
+        # Get correct df and classes
+        df, value_vars = self.configure(df)
         df = df.drop(columns=["protein length", "number of regions"], axis=1)
         df_long = df.melt(
-            id_vars=["proteome"], value_vars=["I", "M", "O"], var_name="element"
+            id_vars=["proteome"], value_vars=value_vars, var_name="element"
         )
 
         self.plotting(df_long, ax1)
@@ -40,6 +42,15 @@ class PResidueFractionsTmseg(Plot):
             framealpha=0.8,
             facecolor="white",
         )
+
+
+class PResidueFractionsTmseg(PResidueFractions):
+    PLOT_NAME = "Fraction of TMP Residues (I)nside/(M)embrane/(O)utside"
+    SOURCE_TYPE = "tmseg pbased"
+
+    def configure(self, df: pd.DataFrame):
+        df = df[df["number of regions"] > 0]
+        return df, ["I", "M", "O"]
 
 
 class PResidueFractionsBarsTmseg(PResidueFractionsTmseg):
@@ -79,13 +90,6 @@ class PResidueFractionsViolinsTmseg(PResidueFractionsTmseg):
             palette="Greys_r",
             cut=0,
         )
-
-    # def store_plot(self):
-    #     """Storing routine for thesis document. ^^"""
-    #     fig = plt.gcf()
-    #     fig.set_size_inches(7, 3.5)
-    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
-    #     plt.savefig(out / "tmseg_p_res_fractions_violins.pdf", bbox_inches="tight")
 
 
 class PProtClassFractionsProna(Plot):
@@ -142,10 +146,28 @@ class PProtClassFractionsProna(Plot):
             facecolor="white",
         )
 
-    # def store_plot(self):
-    #     """Storing routine for thesis document. ^^"""
-    #     fig = plt.gcf()
-    #     fig.set_size_inches(8, 3.5)
-    #     # plt.show()
-    #     out = Path("/home/isabell/work/python/thesis/ppprint/plot_pdfs/")
-    #     plt.savefig(out / "tmseg_prot_fractions.pdf", bbox_inches="tight")
+
+class PResidueFractionsReprof(PResidueFractions):
+    PLOT_NAME = "Fraction of Residues H(Helix)/E(Strand)/O(Other)"
+    SOURCE_TYPE = "reprof pbased"
+    FILE_NAME = "reprof_p_res_fractions_bars"
+
+    def configure(self, df: pd.DataFrame):
+        return df, ["H", "E", "O"]
+
+    def plotting(self, df_long: pd.DataFrame, ax1: plt.Axes):
+        sns.barplot(
+            data=df_long,
+            x="proteome",
+            y="value",
+            hue="element",
+            palette="Greys_r",
+            errwidth=1,
+            capsize=0.1,
+            estimator=np.mean,
+            ci=95,
+            n_boot=1000,
+            edgecolor=(1.0, 1.0, 1.0, 1.0),
+            linewidth=1,
+            ax=ax1,
+        )

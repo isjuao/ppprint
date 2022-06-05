@@ -299,7 +299,7 @@ def extract_pbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
             extract_pbased_prona,
             {"minlength": 6, "region_type": ["Protein Binding (RI: 67-100)"]},
         ),
-        "reprof": (extract_rbased_reprof, {"minlength": 4, "region_type": ["Helix"]}),
+        "reprof": (extract_pbased_reprof, {"minlength": 4, "region_type": ["Helix"]}),
     }
     results = {}
 

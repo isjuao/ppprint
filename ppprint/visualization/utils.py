@@ -6,6 +6,7 @@ Call `test_plots` with desired `VisualizationJob` pk and plot class.
 
 from pathlib import Path
 
+import pandas as pd
 from django.conf import settings
 
 from ppprint.models import VisualizationJob
