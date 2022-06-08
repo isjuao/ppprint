@@ -1,9 +1,10 @@
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field
 from django import forms
 
 from ppprint.models import ImportJob, StatusChoices, VisualizationJob
 from ppprint.validators import limit_num_choices, validate_color
-from django.forms import ModelMultipleChoiceField
+from django.forms import ModelMultipleChoiceField, ModelChoiceField
 
 
 class UploadForm(forms.Form):
@@ -11,6 +12,24 @@ class UploadForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Field("name"),
+                css_class="",
+            ),
+            Div(
+                Div(
+                    Field("file"),
+                    css_class="form-group col-md-6 mb-0",
+                ),
+                Div(
+                    Field("color"),
+                    css_class="form-group col-md-6 mb-0",
+                ),
+                css_class="row",
+            ),
+        )
 
     name = forms.CharField(max_length=200)
     file = forms.FileField()
@@ -31,6 +50,7 @@ class SelectionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.fields["sources"].widget.attrs["size"] = "9"
 
     class MyModelMultipleChoiceField(ModelMultipleChoiceField):
         def label_from_instance(self, obj):

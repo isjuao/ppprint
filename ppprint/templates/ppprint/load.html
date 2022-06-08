@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}- {% trans "loading" %}{% endblock title %}
+{% block content %}
+    <div id="loading-box" class="text-center mt-3">
+        <div class="spinner-border" role="status"></div>
+    </div>
+    <div id="text-box" class="text-center mt-3">
+        <br><span>Uploading proteome...</span>
+        <br><br><span>Please refresh page to check on job status.</span>
+        <br><span>You can also:</span><br>
+    </div>
+    <div id="link-buttons" class="text-center mt-3">
+        <a class="btn btn-primary" href="/select">Start a comparison</a>
+        <span>&emsp;or&emsp;</span>
+        <a class="btn btn-primary" href="/upload">Upload a new proteome</a>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>
+        var primary_key = {{ pk }};
+    </script>
+    <script src="{% static "load.js" %}"></script>
+{#    <link rel="stylesheet" href="{% static 'styles.css' %}">#}
+{% endblock content %}

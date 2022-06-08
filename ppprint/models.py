@@ -47,3 +47,9 @@ class ImportJob(Job):
 
 class VisualizationJob(Job):
     sources = models.ManyToManyField("ImportJob")
+
+    def __str__(self):
+        description = ""
+        for obj in self.sources.get_queryset():
+            description += str(obj.name) + ", "
+        return description[:-2]

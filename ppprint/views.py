@@ -1,6 +1,8 @@
+from pathlib import Path
+
 from django.conf import settings
 from django.core.files.storage import default_storage
-from django.http import Http404
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, reverse
 
 from ppprint.forms import SelectionForm, UploadForm
@@ -25,7 +27,10 @@ def create_import_job(request):
                 f"import_job/{import_job.pk}/{filename}", request.FILES["file"]
             )
             run_import_job.delay(import_job.pk)
-            return redirect(reverse("home"))
+            # return redirect(reverse("home"))
+            data = {"pk": import_job.pk}
+            # return render(request, "ppprint/load.html", data)
+            return redirect("loading_screen", pk=import_job.pk)
     else:
         form = UploadForm()
     return render(request, "ppprint/upload.html", {"form": form})
@@ -76,3 +81,24 @@ def detail_visualization_job(request, pk):
             "view": view,
         },
     )
+
+
+def loading_screen(request, pk):
+    ij = ImportJob.objects.get(pk=pk)
+    if ij.status == "SUCCESS" or ij.status == "FAILURE":
+        return render(request, "ppprint/job_finished.html", {"job": ij})
+    else:
+        return render(request, "ppprint/load.html")
+
+
+# def whatever(request):
+#     data = {"foo": "hi"}
+#     return JsonResponse(data, safe=False)
+
+
+def direct_visualization(request, pk):
+    ij = ImportJob.objects.filter(pk=pk)
+    vj = VisualizationJob.objects.create()
+    vj.sources.set(ij)
+    run_visualization_job.delay(vj.pk)
+    return redirect(reverse("list_visualization_jobs"))

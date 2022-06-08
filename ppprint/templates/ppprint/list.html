@@ -7,16 +7,20 @@
     <thead>
     <tr>
         <th>{% trans "Job ID" %}</th>
+        <th></th>
         <th>{% trans "Status" %}</th>
         <th>{% trans "Creation Date" %}</th>
+        <th>{% trans "Proteomes" %}</th>
     </tr>
     </thead>
     <tbody>
     {% for job in jobs %}
         <tr>
-            <td><a href="{% url "visualization" pk=job.pk %}">{{ job.pk }}</a></td>
+            <td>{{ job.pk }}</td>
+            <td><a class="btn btn-primary btn-sm" href="{% url "visualization" pk=job.pk %}">{% trans "View Details" %}</a></td>
             <td>{{ job.get_status_display }}</td>
             <td>{{ job.created_at }}</td>
+            <td>{{ job }}</td>
         </tr>
     {% endfor %}
     </tbody>
