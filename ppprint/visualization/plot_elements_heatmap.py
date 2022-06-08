@@ -94,19 +94,13 @@ class PBindingElementsPlotProna(PElementsPlot):
             df_curr[(df_curr["DBR content"] > 0.0) & (df_curr["PBR content"] > 0.0)]
         )
         matrix_abs.at["No DBR", "Prot bind"] = len(
-            df_curr[
-                (df_curr["DBR content"] == 0.0) & (df_curr["PBR content"] > 0.0)
-                ]
+            df_curr[(df_curr["DBR content"] == 0.0) & (df_curr["PBR content"] > 0.0)]
         )
         matrix_abs.at["DNA bind", "No PBR"] = len(
-            df_curr[
-                (df_curr["DBR content"] > 0.0) & (df_curr["PBR content"] == 0.0)
-                ]
+            df_curr[(df_curr["DBR content"] > 0.0) & (df_curr["PBR content"] == 0.0)]
         )
         matrix_abs.at["No DBR", "No PBR"] = len(
-            df_curr[
-                (df_curr["DBR content"] == 0.0) & (df_curr["PBR content"] == 0.0)
-                ]
+            df_curr[(df_curr["DBR content"] == 0.0) & (df_curr["PBR content"] == 0.0)]
         )
 
         matrix_abs["Total"] = matrix_abs["Prot bind"] + matrix_abs["No PBR"]
@@ -122,10 +116,10 @@ class PBindingElementsPlotProna(PElementsPlot):
 
         # Sanity checking totals
         total_column = (
-                matrix_abs.at["DNA bind", "Total"] + matrix_abs.at["No DBR", "Total"]
+            matrix_abs.at["DNA bind", "Total"] + matrix_abs.at["No DBR", "Total"]
         )
         total_row = (
-                matrix_abs.at["Total", "Prot bind"] + matrix_abs.at["Total", "No PBR"]
+            matrix_abs.at["Total", "Prot bind"] + matrix_abs.at["Total", "No PBR"]
         )
         assert total_row == total_column
         matrix_abs.at["Total", "Total"] = total_column
@@ -172,10 +166,10 @@ class PSecStrElementsPlotReprof(PElementsPlot):
 
         # Sanity checking totals
         total_column = (
-                matrix_abs.at["Helix", "Total"] + matrix_abs.at["No Helix", "Total"]
+            matrix_abs.at["Helix", "Total"] + matrix_abs.at["No Helix", "Total"]
         )
         total_row = (
-                matrix_abs.at["Total", "Strand"] + matrix_abs.at["Total", "No Strand"]
+            matrix_abs.at["Total", "Strand"] + matrix_abs.at["Total", "No Strand"]
         )
         assert total_row == total_column
         matrix_abs.at["Total", "Total"] = total_column

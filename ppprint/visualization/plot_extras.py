@@ -113,11 +113,16 @@ def kl_via_binning(df, arg, bins):
 
     # Calculate kl for every pair
     pairs = list(itertools.permutations(proteomes, 2))
-    df_kl = pd.DataFrame({
-        "first": [pair[0] for pair in pairs],
-        "second": [pair[1] for pair in pairs],
-        "value": [round(stats.entropy(bin_values[pair[0]], bin_values[pair[1]]), 2) for pair in pairs],
-    })
+    df_kl = pd.DataFrame(
+        {
+            "first": [pair[0] for pair in pairs],
+            "second": [pair[1] for pair in pairs],
+            "value": [
+                round(stats.entropy(bin_values[pair[0]], bin_values[pair[1]]), 2)
+                for pair in pairs
+            ],
+        }
+    )
 
     return df_kl
 
@@ -125,10 +130,16 @@ def kl_via_binning(df, arg, bins):
 def plot_kl(df_kl, name_mapping, ax):
     """Plots a pairwise metric (KL) of multiple proteomes as specified in the given matrix in form of a heatmap."""
 
-    df_matrix = df_kl.pivot(index="first", columns="second", values="value").fillna(0)
-    names = list(name_mapping[p] for p in df_matrix.columns)
-    df_matrix.index.name = ""
-    df_matrix.columns.name = ""
+    if df_kl.empty:
+        df_matrix = np.zeros(shape=(1, 1))
+        names = name_mapping.values()
+    else:
+        df_matrix = df_kl.pivot(index="first", columns="second", values="value").fillna(
+            0
+        )
+        names = list(name_mapping[p] for p in df_matrix.columns)
+        df_matrix.index.name = ""
+        df_matrix.columns.name = ""
 
     sns.heatmap(
         df_matrix,
@@ -147,5 +158,3 @@ def plot_kl(df_kl, name_mapping, ax):
     ax.set_title("KL Between Whole Distributions", y=1.1)
     ax.set_xticklabels(ax.get_xticklabels(), fontsize=9)
     ax.set_yticklabels(ax.get_yticklabels(), fontsize=9)
-
-

@@ -33,7 +33,11 @@ class RPointLinePlot(Plot):
             points_descriptions.extend([d for _ in range(0, len(t))])
 
         df_result = pd.DataFrame(
-            {"touched point": touched_points, "proteome": points_proteomes, "description": points_descriptions}
+            {
+                "touched point": touched_points,
+                "proteome": points_proteomes,
+                "description": points_descriptions,
+            }
         )
         return df_result
 
@@ -97,10 +101,12 @@ class RPointLinePlotReprof(RPointLinePlot):
 
         df_splitreg = self.split_point_regions(df)
 
-        sizes = pd.DataFrame(df_splitreg.groupby(["proteome", "description"]).size()).rename(
-            {0: "proteome size"}, axis=1
+        sizes = pd.DataFrame(
+            df_splitreg.groupby(["proteome", "description"]).size()
+        ).rename({0: "proteome size"}, axis=1)
+        df_splitreg = df_splitreg.join(
+            sizes, how="left", on=["proteome", "description"]
         )
-        df_splitreg = df_splitreg.join(sizes, how="left", on=["proteome", "description"])
         df_splitreg["value"] = 1 / df_splitreg["proteome size"]
         sns.lineplot(
             data=df_splitreg,

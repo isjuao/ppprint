@@ -5,13 +5,19 @@ import pandas as pd
 import seaborn as sns
 
 from ppprint.visualization.plot import Plot
-from ppprint.visualization.plot_extras import ci_per_bin, val_per_bin, plot_errorbars, kl_via_binning, plot_kl
+from ppprint.visualization.plot_extras import (
+    ci_per_bin,
+    val_per_bin,
+    plot_errorbars,
+    kl_via_binning,
+    plot_kl,
+)
 
 
 class PContentPerProteinPlot(Plot):
     def _run(self, df: pd.DataFrame):
         # Add KL-heatmap to histogram
-        gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[2,1])
+        gs = gridspec.GridSpec(nrows=1, ncols=2, width_ratios=[2, 1])
         ax1 = plt.subplot(gs[0])
         ax2 = plt.subplot(gs[1])
         fig = plt.gcf()
