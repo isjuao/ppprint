@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}- {% trans "loading" %}{% endblock title %}
+{% block content %}
+    <div id="loading-box" class="text-center mt-3">
+        <div class="spinner-border" role="status"></div>
+    </div>
+    <div id="text-box" class="text-center mt-3">
+        <br><span>{% trans "Uploading proteome..." %}</span>
+        <br><br><span>{% trans "Page will refresh automatically upon completion." %}</span>
+        <br><span>{% trans "You can also:" %}</span><br>
+    </div>
+    <div id="link-buttons" class="text-center mt-3">
+        <a class="btn btn-primary" href="/select">{% trans "Start a comparison" %}</a>
+        <span>&emsp;or&emsp;</span>
+        <a class="btn btn-primary" href="/upload">{% trans "Upload a new proteome" %}</a>
+    </div>
+    <script>
+        setTimeout(()=> window.location.reload(), 5000)
+    </script>
+{% endblock content %}

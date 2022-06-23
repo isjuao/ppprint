@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}- {% trans "loading" %}{% endblock title %}
+{% block content %}
+    <div id="loading-box" class="text-center mt-3">
+        <div class="spinner-border" role="status"></div>
+    </div>
+    <div id="text-box" class="text-center mt-3">
+        <br><span>{% trans "Processing visualization..." %}</span>
+        <br><br><span>{% trans "Page will refresh automatically." %}</span>
+        <br><span>{% trans "Results will show after successful completion." %}</span><br>
+        <br><a class="btn btn-primary" href="/list">{% trans "See all Visualizations" %}</a>
+    </div>
+    <script>
+        setTimeout(()=> window.location.reload(), 5000)
+    </script>
+{% endblock content %}

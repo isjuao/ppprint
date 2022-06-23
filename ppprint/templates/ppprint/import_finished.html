@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}- {% trans "finished" %}{% endblock title %}
+{% block content %}
+    <br><br>
+    <div class="col d-flex justify-content-center">
+        <div class="card" style="width: 18rem;">
+              <div class="card-header">
+                {% trans "Imported Proteome " %}{{ job.name }}
+              </div>
+              <ul class="list-group list-group-flush">
+                  <li class="list-group-item">{% trans "Job " %}{{ job.pk }}</li>
+                <li class="list-group-item">{{ job.created_at }}</li>
+                <li class="list-group-item">{% trans "Finished with " %}{{ job.get_status_display }}</li>
+              </ul>
+        </div>
+    </div>
+    {% if job.status == "SUCCESS" %}
+        <div class="text-center mt-3">
+            <span>{% trans "Successful import, you can now" %}</span>
+            <div id="link-buttons" class="text-center mt-3">
+                <a class="btn btn-success" href="/finished-import/{{ job.pk }}">{% trans "Analyze proteome " %}{{ job.name }}</a>
+                <span> {% trans " or " %} </span>
+                <a class="btn btn-primary" href="/select">{% trans "Start a comparison" %}</a>
+                <span> {% trans " or " %} </span>
+                <a class="btn btn-secondary" href="/upload">{% trans "Upload a new proteome" %}</a>
+            </div>
+            <br>{% trans "After 15 seconds, you will be redirected to " %}<span style="font-family:'Courier New'">ppprint</span> home.
+        </div>
+    {% endif %}
+    {% if job.status == "FAILURE" %}
+        <div class="text-center mt-3">
+            <span>{% trans "Import failed, you can now" %}</span>
+            <div id="link-buttons" class="text-center mt-3">
+                <a class="btn btn-primary" href="/select">{% trans "See successful imports" %}</a>
+                <span> {% trans " or " %} </span>
+                <a class="btn btn-secondary" href="/upload">{% trans "Try another upload" %}</a>
+            </div>
+            <br>{% trans "After 15 seconds, you will be redirected to " %}<span style="font-family:'Courier New'">ppprint</span> home.
+        </div>
+    {% endif %}
+    <script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = "/"
+        }, 15000);
+    </script>
+{% endblock content %}

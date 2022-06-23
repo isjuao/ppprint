@@ -11,8 +11,9 @@ from ppprint.views import (
     detail_visualization_job,
     home,
     list_visualization_jobs,
-    loading_screen,
+    import_job_status_page,
     direct_visualization,
+    visualization_job_status_page,
 )
 
 urlpatterns = [
@@ -22,8 +23,13 @@ urlpatterns = [
     path("select", compare_proteomes, name="compare_proteomes"),
     path("list", list_visualization_jobs, name="list_visualization_jobs"),
     path("visualization/<int:pk>", detail_visualization_job, name="visualization"),
-    path("load/<int:pk>", loading_screen, name="loading_screen"),
-    path("finished/<int:pk>", direct_visualization, name="direct_visualization")
+    path("load-import/<int:pk>", import_job_status_page, name="import_job_status_page"),
+    path("finished-import/<int:pk>", direct_visualization, name="direct_visualization"),
+    path(
+        "load-vis/<int:pk>",
+        visualization_job_status_page,
+        name="visualization_job_status_page",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

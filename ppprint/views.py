@@ -27,10 +27,7 @@ def create_import_job(request):
                 f"import_job/{import_job.pk}/{filename}", request.FILES["file"]
             )
             run_import_job.delay(import_job.pk)
-            # return redirect(reverse("home"))
-            data = {"pk": import_job.pk}
-            # return render(request, "ppprint/load.html", data)
-            return redirect("loading_screen", pk=import_job.pk)
+            return redirect("import_job_status_page", pk=import_job.pk)
     else:
         form = UploadForm()
     return render(request, "ppprint/upload.html", {"form": form})
@@ -42,7 +39,7 @@ def compare_proteomes(request):
         if form.is_valid():
             visualization_job = form.save()
             run_visualization_job.delay(visualization_job.pk)
-            return redirect(reverse("home"))
+            return redirect("visualization_job_status_page", pk=visualization_job.pk)
     else:
         form = SelectionForm()
     return render(request, "ppprint/selection.html", {"form": form})
@@ -63,37 +60,56 @@ def detail_visualization_job(request, pk):
         "reprof": REPROF,
         "combined": COMBINED,
     }
-    try:
-        plot_classes = plots[view]
-    except KeyError:
-        raise Http404("Feature view does not exist.")
-    vj = VisualizationJob.objects.get(pk=pk)
-    base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
-    mapping = [
-        (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME) for cls in plot_classes
-    ]
-    return render(
-        request,
-        "ppprint/plots.html",
-        {
-            "job": vj,
-            "mapping": mapping,
-            "view": view,
-        },
-    )
+    if view != "reprof":
+        try:
+            plot_classes = plots[view]
+        except KeyError:
+            raise Http404("Feature view does not exist.")
+        vj = VisualizationJob.objects.get(pk=pk)
+        base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
+        mapping = [
+            (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
+            for i, cls in enumerate(plot_classes)
+        ]
+        return render(
+            request,
+            "ppprint/plots.html",
+            {
+                "job": vj,
+                "mapping": mapping,
+                "view": view,
+            },
+        )
+    # Testing purposes
+    else:
+        vj = VisualizationJob.objects.get(pk=pk)
+        base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
+        mapping_dict = {
+            cls.FILE_NAME: (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
+            for i, cls in enumerate(plots[view])
+        }
+        mapping = [
+            (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
+            for i, cls in enumerate(plots[view])
+        ]
+        return render(
+            request,
+            "ppprint/plots_reprof.html",
+            {
+                "job": vj,
+                "view": view,
+                "mapping": mapping_dict,
+                "basepath": base_path,
+            },
+        )
 
 
-def loading_screen(request, pk):
+def import_job_status_page(request, pk):
     ij = ImportJob.objects.get(pk=pk)
     if ij.status == "SUCCESS" or ij.status == "FAILURE":
-        return render(request, "ppprint/job_finished.html", {"job": ij})
+        return render(request, "ppprint/import_finished.html", {"job": ij})
     else:
-        return render(request, "ppprint/load.html")
-
-
-# def whatever(request):
-#     data = {"foo": "hi"}
-#     return JsonResponse(data, safe=False)
+        return render(request, "ppprint/import_load.html")
 
 
 def direct_visualization(request, pk):
@@ -101,4 +117,14 @@ def direct_visualization(request, pk):
     vj = VisualizationJob.objects.create()
     vj.sources.set(ij)
     run_visualization_job.delay(vj.pk)
-    return redirect(reverse("list_visualization_jobs"))
+    return redirect("visualization_job_status_page", pk=vj.pk)
+
+
+def visualization_job_status_page(request, pk):
+    vj = VisualizationJob.objects.get(pk=pk)
+    if vj.status == "SUCCESS":
+        return redirect(reverse("visualization", kwargs={"pk": pk}))
+    elif vj.status == "FAILURE":
+        return redirect("list_visualization_jobs", pk=pk)
+    else:
+        return render(request, "ppprint/vis_load.html")
