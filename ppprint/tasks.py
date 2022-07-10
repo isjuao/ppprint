@@ -11,6 +11,7 @@ from ppprint.preprocessing.run import (
     run_extract,
     run_info,
     store,
+    LoggedException,
 )
 from ppprint.visualization.run import run
 
@@ -22,6 +23,13 @@ def watchdog(cls: Type[Job]):
 
             try:
                 result = f(self, pk, *args, **kwargs)
+            except LoggedException as logexc:
+                job = cls.objects.get(pk=pk)
+                job.status = StatusChoices.FAILURE
+                job.add_message(logexc.message)
+
+                job.save()
+                return None
             except Exception as exc:
                 cls.objects.filter(pk=pk).update(status=StatusChoices.FAILURE)
                 raise exc

@@ -4,13 +4,22 @@ This is mostly copypasta of `pp_to_json.py`, but for whole proteomes,
 tailored to be used by ppprint.
 """
 
+import os
 import json
 import logging
+import pathlib
 from itertools import chain, groupby
 from pathlib import Path
 from typing import List, Callable
+from ppprint.preprocessing.utils import LoggedException
+
+from ppprint.models import ImportJob
 
 logger = logging.getLogger(__name__)
+
+
+class SequenceException(Exception):
+    pass
 
 
 def retry_with_latin(f: Callable[..., List]):
@@ -76,7 +85,7 @@ def get_sequence(path: Path) -> str:
 
     # Warn if there is more than one sequence in the file
     if count > 1:
-        logger.warning(f"FASTA file {path} contained {count} sequences. Expected 1.")
+        raise SequenceException(f"FASTA file {path} contained {count} sequences. Expected 1.")
     return "".join(sequence)
 
 
@@ -272,7 +281,12 @@ def parse_reprof(path: Path, encoding="utf-8") -> List:
     return filter_segments(segments, type_dict)
 
 
-def parse_protein(base_path: Path, protein: str):
+def handle_exception(import_job_pk: int, message: str):
+    ij = ImportJob.objects.get(pk=import_job_pk)
+    ij.add_message(message)
+
+
+def parse_protein(base_path: Path, protein: str, import_job_pk: int):
     """Parses information for a given protein."""
 
     def run(f, extension: str):
@@ -281,9 +295,18 @@ def parse_protein(base_path: Path, protein: str):
         path = base_path / f"{protein}.{extension}"
 
         if path.exists():
-            return f(path)
+            try:
+                return f(path)
+            except SequenceException as exc:
+                handle_exception(import_job_pk, exc.args[0])
+            except Exception:
+                m = f"Could not PARSE {protein}.{extension} in {base_path.name}."
+                handle_exception(import_job_pk, m)
         else:
-            return []
+            m = f"Could not FIND {protein}.{extension} in {base_path.name}."
+            handle_exception(import_job_pk, m)
+
+        return []
 
     # We can trust that sequence never gets a list
     sequence = run(get_sequence, "fasta")
@@ -292,21 +315,33 @@ def parse_protein(base_path: Path, protein: str):
     mdisorder = run(parse_mdisorder, "mdisorder")
     reprof = run(parse_reprof, "reprof")
 
+    # For creating test data
+
+    # features = [mdisorder, tmseg, prona, reprof]
+    # valid_protein = True
+    # for feature in features:
+    #     if len(feature) == 0 or len(feature) > 5:
+    #         valid_protein = False
+    #         break
+    # if valid_protein:
+    #     print(protein)
+    #     breakpoint()
+
     return (sequence, tmseg, prona, mdisorder, reprof)
 
 
-def parse(base_path: Path):
-    """Parses sequence, tmseg, prona and mdisorder and returns a generator."""
+def parse(base_path: Path, import_job_pk: int):
+    """Parses sequence, tmseg, prona, reprof and mdisorder and returns a generator."""
 
     for p in (p for p in base_path.iterdir() if p.is_dir()):
         # Identify the proteins based on the present .fasta files
         # (required existence of a .fasta for each protein)
         fasta_files = list(p.glob("*.fasta"))
         for protein in (p.stem for p in fasta_files):
-            yield parse_protein(p, protein)
+            yield parse_protein(p, protein, import_job_pk)
 
 
-def write_json(base_path: Path, out_file: Path):
+def write_json(base_path: Path, out_file: Path, import_job_pk: int):
     """Writes a JSON file for a given proteome."""
 
     json.JSONEncoder(ensure_ascii=False, check_circular=False)
@@ -321,12 +356,13 @@ def write_json(base_path: Path, out_file: Path):
                 "mdisorder": mdisorder,
                 "reprof": reprof,
             }
-            for sequence, tmseg, prona, mdisorder, reprof in parse(base_path)
+            for sequence, tmseg, prona, mdisorder, reprof in parse(base_path, import_job_pk)
         ]
 
-        for chunk in json.JSONEncoder().iterencode(data):
-            f.write(chunk)
+        if len(data) == 0:
+            m = "Could not find any proteins. Make sure to check required data structure within the archive."
+            raise LoggedException(m)
+        else:
+            for chunk in json.JSONEncoder().iterencode(data):
+                f.write(chunk)
 
-
-if __name__ == "__main__":
-    write_json(Path("data"), Path("outfile.json"))

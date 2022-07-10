@@ -6,7 +6,7 @@ from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, reverse
 
 from ppprint.forms import SelectionForm, UploadForm
-from ppprint.models import ImportJob, VisualizationJob
+from ppprint.models import ImportJob, VisualizationJob, StatusChoices
 from ppprint.tasks import run_import_job, run_visualization_job
 from ppprint.visualization import ALL, MDISORDER, PRONA, TMSEG, REPROF, COMBINED
 
@@ -106,7 +106,7 @@ def detail_visualization_job(request, pk):
 
 def import_job_status_page(request, pk):
     ij = ImportJob.objects.get(pk=pk)
-    if ij.status == "SUCCESS" or ij.status == "FAILURE":
+    if ij.status == StatusChoices.SUCCESS or ij.status == StatusChoices.FAILURE:
         return render(request, "ppprint/import_finished.html", {"job": ij})
     else:
         return render(request, "ppprint/import_load.html")
@@ -122,9 +122,9 @@ def direct_visualization(request, pk):
 
 def visualization_job_status_page(request, pk):
     vj = VisualizationJob.objects.get(pk=pk)
-    if vj.status == "SUCCESS":
+    if vj.status == StatusChoices.SUCCESS:
         return redirect(reverse("visualization", kwargs={"pk": pk}))
-    elif vj.status == "FAILURE":
+    elif vj.status == StatusChoices.FAILURE:
         return redirect("list_visualization_jobs", pk=pk)
     else:
         return render(request, "ppprint/vis_load.html")

@@ -14,6 +14,7 @@ from django.conf import settings
 from ppprint.models import ImportJob
 from ppprint.preprocessing.extract import extract_pbased, extract_rbased, read_json
 from ppprint.preprocessing.parse import write_json
+from ppprint.preprocessing.utils import LoggedException
 
 
 def extract_data(base_folder: Path, data_folder: Path):
@@ -25,8 +26,12 @@ def extract_data(base_folder: Path, data_folder: Path):
         if not item.is_dir() and tarfile.is_tarfile(item):
             archive = item
 
-    with tarfile.open(archive, "r") as tf:
-        tf.extractall(data_folder)
+    try:
+        with tarfile.open(archive, "r") as tf:
+            tf.extractall(data_folder)
+    except tarfile.ReadError:
+        message = "Failed to read proteome file. No ImportJob was created!"
+        raise LoggedException(message)
 
 
 def run_extract(import_job_pk: int):
@@ -37,7 +42,7 @@ def run_extract(import_job_pk: int):
     json_path = base_folder / "data.json"
 
     extract_data(base_folder, data_folder)
-    write_json(data_folder, json_path)
+    write_json(data_folder, json_path, import_job_pk)
 
     return json_path
 
