@@ -1,0 +1,48 @@
+Number Residue NORSnet NORS2st PROFbval bval2st Ucon Ucon2st MD_raw   MD_rel  MD2st 
+    1	M	0.00	-	0.99	D	0.18	-	0.646	5	D
+    2	T	0.00	-	0.69	D	0.23	-	0.626	4	D
+    3	A	0.00	-	0.40	-	0.16	-	0.596	3	D
+    4	L	0.00	-	0.30	-	0.20	-	0.566	1	D
+    5	L	0.00	-	0.20	-	0.23	-	0.545	1	D
+    6	R	0.00	-	0.23	-	0.26	-	0.551	1	D
+    7	V	0.00	-	0.21	-	0.39	-	0.535	0	D
+    8	I	0.00	-	0.12	-	0.31	-	0.515	0	-
+    9	S	0.00	-	0.15	-	0.28	-	0.531	0	D
+   10	L	0.00	-	0.12	-	0.26	-	0.541	0	D
+   11	V	0.00	-	0.10	-	0.44	-	0.596	3	D
+   12	V	0.00	-	0.17	-	0.46	-	0.510	0	-
+   13	I	0.00	-	0.12	-	0.46	-	0.434	2	-
+   14	S	0.00	-	0.23	-	0.71	D	0.444	2	-
+   15	V	0.00	-	0.12	-	0.45	-	0.343	5	-
+   16	V	0.00	-	0.09	-	0.29	-	0.333	6	-
+   17	V	0.00	-	0.12	-	0.30	-	0.354	5	-
+   18	I	0.00	-	0.08	-	0.21	-	0.404	3	-
+   19	I	0.00	-	0.10	-	0.26	-	0.343	5	-
+   20	I	0.00	-	0.12	-	0.21	-	0.354	5	-
+   21	P	0.00	-	0.10	-	0.23	-	0.465	1	-
+   22	P	0.00	-	0.17	-	0.18	-	0.505	0	-
+   23	C	0.00	-	0.21	-	0.13	-	0.586	2	D
+   24	G	0.01	-	0.34	-	0.13	-	0.510	0	-
+   25	A	0.01	-	0.42	-	0.16	-	0.556	1	D
+   26	A	0.01	-	0.41	-	0.15	-	0.616	4	D
+   27	L	0.02	-	0.32	-	0.15	-	0.606	3	D
+   28	G	0.02	-	0.48	D	0.18	-	0.646	5	D
+   29	R	0.01	-	0.69	D	0.18	-	0.626	4	D
+   30	G	0.01	-	0.78	D	0.20	-	0.531	0	D
+   31	K	0.01	-	0.88	D	0.22	-	0.586	2	D
+   32	A	0.07	-	0.89	D	0.49	-	0.556	1	D
+
+
+Key for output
+----------------
+Number - residue number
+Residue - amino-acid type
+NORSnet - raw score by NORSnet (prediction of unstructured loops)
+NORS2st - two-state prediction by NORSnet; D=disordered
+PROFbval - raw score by PROFbval (prediction of residue flexibility from sequence)
+Bval2st - two-state prediction by PROFbval
+Ucon - raw score by Ucon (prediction of protein disorder using predicted internal contacts)
+Ucon2st - two-state prediction by Ucon
+MD - raw score by MD (prediction of protein disorder using orthogonal sources)
+MD_rel - reliability of the prediction by MD; values range from 0-9. 9=strong prediction
+MD2st - two-state prediction by MD
