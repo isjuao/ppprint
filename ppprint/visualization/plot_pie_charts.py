@@ -78,6 +78,10 @@ class POrientationsPlotTmseg(PiePlotTmseg):
         num_TMPs = sum(abs_pie.values)
         pie = abs_pie / num_TMPs
         # Merge two categories
+        if "Signal Peptide" not in pie.index:
+            pie["Signal Peptide"] = 0
+        if "Membrane" not in pie.index:
+            pie["Membrane"] = 0
         pie["Membrane/SP"] = pie["Signal Peptide"] + pie["Membrane"]
         pie = pie.drop(["Signal Peptide", "Membrane"])
 

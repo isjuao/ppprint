@@ -83,7 +83,7 @@ class PContentPerProteomePlotProna(PContentPerProteomePlot):
 
 
 class PCompositionPerProteomePlotMdisorder(Plot):
-    PLOT_NAME = "Fraction of Proteins With at Least One DR"
+    PLOT_NAME = "Disorder Composition"
     SOURCE_TYPE = "mdisorder pbased"
     FILE_NAME = "mdisorder_p_composition"
 

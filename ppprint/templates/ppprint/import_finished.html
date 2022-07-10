@@ -31,7 +31,12 @@
     {% endif %}
     {% if job.status == "FAILURE" %}
         <div class="text-center mt-3">
-            <span>{% trans "Import failed, you can now" %}</span>
+            <span>{% trans "Import failed. The following error messages were collected:" %}</span>
+            <br>
+            {% for message in job.messages %}
+                {{ message.text }}<br>
+            {% endfor %}
+            <span>{% trans "You can now" %}</span>
             <div id="link-buttons" class="text-center mt-3">
                 <a class="btn btn-primary" href="/select">{% trans "See successful imports" %}</a>
                 <span> {% trans " or " %} </span>
