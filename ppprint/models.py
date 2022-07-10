@@ -14,6 +14,10 @@ class StatusChoices(models.TextChoices):
     FAILURE = "FAILURE", _("Failure")
 
 
+class Message(models.Model):
+    text = models.TextField()
+
+
 class Job(models.Model):
     status = models.CharField(
         max_length=7, choices=StatusChoices.choices, default=StatusChoices.CREATED
@@ -21,6 +25,11 @@ class Job(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
     )
+    messages = models.ManyToManyField(Message)
+
+    def add_message(self, text):
+        if text:
+            self.messages.add(Message.objects.create(text=text))
 
     class Meta:
         abstract = True
