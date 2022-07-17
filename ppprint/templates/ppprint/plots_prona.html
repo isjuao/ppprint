@@ -1,0 +1,103 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization for Ligand Binding" %}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Ligand Binding and ProNA Predictor
+                    </div>
+                    <div class="card-body">
+                        <p style="text-align:justify">
+                            The vast majority of proteins are involved in processes of binding to other molecules during
+                            their lifespan. Determining presence and position of potential protein, DNA, or RNA binding
+                            sites is therefore an integral part of understanding the function of proteins. The
+                            predominant purpose of drugs is influencing the way a protein is interacting with its
+                            ligand,
+                            which is strongly dictated by the binding partner preference as well as the involved binding
+                            residues of the drug complex. Knowledge of the distribution of binding behaviors of
+                            eukaryotic and prokaryotic proteomes might further reveal underlying variety in interaction
+                            processes within the different kingdoms.
+                            <br>
+                            Binding sites are three-dimensional complexes shaped by few amino acid residues that can be
+                            far apart in sequence, yet close in 3D structure. Enforced by a lack of experimentally
+                            verified data, this makes it challenging to predict residues involved in binding for tools
+                            like ProNA2019, a predating version of ProNA2020 [1]. ProNA2019 is used to generate
+                            predictions for ppprint. Following Mészáros et al. [2], ppprint uses a minimum number of six
+                            amino acid residues for each binding region in order to exclude biophysically questionable
+                            predictions. Since ProNA2019 classifies the reliability of its predictions (a discrete score
+                            ranging from 0 to 100) into three classes, only regions of the highest reliability index
+                            class [67, 100] are kept for analysis.
+                            <br><br>
+                            [1] Qiu, J., Bernhofer, M., Heinzinger, M., Kemper, S., Norambuena, T., Melo, F. & Rost, B.
+                            ProNA2020 predicts protein–DNA, protein–RNA, and protein–protein binding proteins and
+                            residues from sequence. Journal of Molecular Biology 432, 2428–2443.
+                            doi:https://doi.org/10.1016/j.jmb.2020.02.026 (2020).
+                            <br>
+                            [2] Mészáros, B., Simon, I. & Dosztányi, Z. Prediction of Protein Binding Regions in
+                            Disordered Proteins. PLOS Computational Biology 5, 1–18. doi:10.1371/journal.pcbi.1000376
+                            (May 2009).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of feature region lengths, relative to the length of the protein the region belongs to, with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_r_length_hist_rel.0 plotname=mapping.prona_r_length_hist_rel.1 plotid=mapping.prona_r_length_hist_rel.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of absolute feature region lengths, independent of the protein a region belongs to,with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_r_length_hist_abs.0 plotname=mapping.prona_r_length_hist_abs.1 plotid=mapping.prona_r_length_hist_abs.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Within-protein location of feature regions, measured as frequency of feature at each relative index position." othertext="Relative region lengths build on the concept of indices relative to protein lengths, enabling a comparison across proteins of different lengths." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_r_points.0 plotname=mapping.prona_r_points.1 plotid=mapping.prona_r_points.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Single value assigned to each proteome." othertext="Defined as the sum of the number of residues in any feature region of a proteome, divided by the total number of residues of all proteins in the proteome." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_p_content_proteome.0 plotname=mapping.prona_p_content_proteome.1 plotid=mapping.prona_p_content_proteome.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of the number of feature regions per protein, depicting the proportions of groups of proteins with different numbers of regions with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_p_num_regions.0 plotname=mapping.prona_p_num_regions.1 plotid=mapping.prona_p_num_regions.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="The distribution of the number of residues located in feature-regions divided by the protein length, with computed Kernel Density Estimate (KDE)." othertext="Thus, a high mean content (given in the legend) corresponds to an over-representation of proteins with a large fraction of residues contained in regions." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_p_content_protein.0 plotname=mapping.prona_p_content_protein.1 plotid=mapping.prona_p_content_protein.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Matrix depicting the relative number of proteins containing at least one DNA-binding and/or/nor protein-binding region, for each proteome." othertext="During the development of ppprint, aspects of RNA-binding differentiated less than DNA-binding or protein-binding across the sample proteomes. Thus, this plot does not show RNA-binding information." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_p_elements.0 plotname=mapping.prona_p_elements.1 plotid=mapping.prona_p_elements.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Fraction of proteins in each proteome that bind to DNA/RNA/protein with at least one region." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.prona_p_prot_fractions.0 plotname=mapping.prona_p_prot_fractions.1 plotid=mapping.prona_p_prot_fractions.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

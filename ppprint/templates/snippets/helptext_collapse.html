@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<button class="btn btn-secondary btn-sm float-end" type="button" data-bs-toggle="collapse"
+        data-bs-target="#help_{{ plotid }}" aria-expanded="false"
+        aria-controls="help_{{ plotid }}">
+    <i class="bi bi-info-circle"></i>{% trans " Help" %}
+</button>
+<div class="collapse" id="help_{{ plotid }}">
+    <br>
+    <div class="card w-100 bg-light card-body">
+        <p class="fw-light" style="text-align:justify">
+            <strong>{% trans strongtext %}</strong> {% trans othertext %}
+        </p>
+    </div>
+</div>

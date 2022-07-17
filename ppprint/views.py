@@ -60,48 +60,43 @@ def detail_visualization_job(request, pk):
         "reprof": REPROF,
         "combined": COMBINED,
     }
-    if view != "reprof":
-        try:
-            plot_classes = plots[view]
-        except KeyError:
-            raise Http404("Feature view does not exist.")
-        vj = VisualizationJob.objects.get(pk=pk)
-        base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
-        mapping = [
-            (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
-            for i, cls in enumerate(plot_classes)
-        ]
-        return render(
-            request,
-            "ppprint/plots.html",
-            {
-                "job": vj,
-                "mapping": mapping,
-                "view": view,
-            },
-        )
-    # Testing purposes
-    else:
-        vj = VisualizationJob.objects.get(pk=pk)
-        base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
-        mapping_dict = {
-            cls.FILE_NAME: (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
-            for i, cls in enumerate(plots[view])
-        }
-        mapping = [
-            (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
-            for i, cls in enumerate(plots[view])
-        ]
-        return render(
-            request,
-            "ppprint/plots_reprof.html",
-            {
-                "job": vj,
-                "view": view,
-                "mapping": mapping_dict,
-                "basepath": base_path,
-            },
-        )
+    try:
+        plot_classes = plots[view]
+    except KeyError:
+        raise Http404("Feature view does not exist.")
+
+    vj = VisualizationJob.objects.get(pk=pk)
+    base_path = settings.MEDIA_URL + f"visualization_job/{pk}/"
+
+    # Use for general assembly of plots (without help texts)
+    #
+    # mapping = [
+    #     (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
+    #     for i, cls in enumerate(plot_classes)
+    # ]
+    # return render(
+    #     request,
+    #     "ppprint/plots_other.html",
+    #     {
+    #         "job": vj,
+    #         "mapping": mapping,
+    #         "view": view,
+    #     },
+    # )
+    mapping_dict = {
+        cls.FILE_NAME: (base_path + cls.FILE_NAME + ".png", cls.PLOT_NAME, i)
+        for i, cls in enumerate(plot_classes)
+    }
+    return render(
+        request,
+        f"ppprint/plots_{view}.html",
+        {
+            "job": vj,
+            "view": view,
+            "mapping": mapping_dict,
+            "basepath": base_path,
+        },
+    )
 
 
 def import_job_status_page(request, pk):

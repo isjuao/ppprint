@@ -1,0 +1,52 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization for Combined Features" %}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Combined Features
+                    </div>
+                    <div class="card-body">
+                        <p style="text-align:justify">
+                            [ PLACEHOLDER FOR COMBINED FEATURES HELP TEXT ]
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="The simultaneous presence of disordered regions and transmembrane helices." othertext="Transmembrane proteins consist of one or multiple helices domains crossing the cellular membrane. Intuitively, this structural requirement leaves little room for disordered regions that do not adopt a stable three-dimensional form. The decimal numbers displayed in each segment indicate the number of proteins containing at least one region of disorder (yellow), transmembrane helix (blue) or both (intersection). Numbers are given relative to proteome size." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mixed_tmseg_mdis_p_overlap.0 plotname=mapping.mixed_tmseg_mdis_p_overlap.1 plotid=mapping.mixed_tmseg_mdis_p_overlap.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of absolute disordered protein-binding region (DPBR) lengths, independent of the protein a region belongs to." othertext="The length of a DPBR is defined as the length of the predicted binding region that overlaps with a disordered region." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mixed_mdis_prona_r_dpbr_lengths.0 plotname=mapping.mixed_mdis_prona_r_dpbr_lengths.1 plotid=mapping.mixed_mdis_prona_r_dpbr_lengths.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of the number of protein-binding regions per disordered region, depicting the proportions of groups of disordered regions with different numbers of overlapping protein-binding regions." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mixed_mdis_prona_r_pbr_per_dr.0 plotname=mapping.mixed_mdis_prona_r_pbr_per_dr.1 plotid=mapping.mixed_mdis_prona_r_pbr_per_dr.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="The relationship between the fraction of disordered residues used in binding (DUBs) and the relative number of amino acids within disordered regions for each proteome." othertext="The fraction of DUBs is defined as the number of protein-binding residues that are located in a binding region that overlaps a disordered region." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mixed_mdis_prona_r_scatter.0 plotname=mapping.mixed_mdis_prona_r_scatter.1 plotid=mapping.mixed_mdis_prona_r_scatter.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

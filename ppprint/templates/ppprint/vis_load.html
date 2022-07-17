@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% block title %}- {% trans "loading" %}{% endblock title %}
-{% block content %}
+{% block all %}
     <div id="loading-box" class="text-center mt-3">
         <div class="spinner-border" role="status"></div>
     </div>
@@ -16,4 +16,4 @@
     <script>
         setTimeout(()=> window.location.reload(), 5000)
     </script>
-{% endblock content %}
+{% endblock all %}

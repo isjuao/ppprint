@@ -2,10 +2,10 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% block title %}- {% trans "selection" %}{% endblock title %}
-{% block content %}
+{% block all %}
     <h1>{% trans "Select proteomes for comparison" %}</h1>
     <form method="post">
     {% crispy form %}
         <button type="submit" class="btn btn-dark float-end">{% trans "Submit" %}</button>
     </form>
-{% endblock content %}
+{% endblock all %}

@@ -1,0 +1,102 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization for Protein Disorder" %}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        Protein Disorder and Meta-Disorder Predictor
+                    </div>
+                    <div class="card-body bg-light">
+                        <p style="text-align:justify">
+                            Protein disorder comes in many shapes, including not only loops in secondary structure, but
+                            also molten globule domains and more. As a sup-ordinate definition applying to all types of
+                            disorder, disordered regions (DRs) in proteins can be defined as a those regions, which
+                            adopt
+                            two potentially widely different three-dimensional (3D) structures in isolation, when
+                            observed at two different points in time. Simply put, they lack a stable 3D structure.
+                            Research of the past one and a half decade has discovered that protein disorder is conserved
+                            in evolution. Since the flexibility of DRs could be utilized to regulate complex protein
+                            interactions, the level of disorder prevalent in an organism’s proteome could hint at its
+                            biological complexity.
+                            <br>
+                            The definition of protein disorder covers multiple phenomena regarding lack of structure,
+                            including local flexible loops. Those disorder loops behave differently than shorter loops
+                            in
+                            non-regular secondary structure, with length being a key factor for machine learning methods
+                            distinguishing the two. Although there is no scientific reality for a particular threshold
+                            level, it is biophysically safe to discern regular flexible loop regions in well- structured
+                            proteins from loopy disordered at a length of 30 residues. Thus, any predicted disordered
+                            regions (DRs) with a length smaller than 30 are excluded. In PredictProtein, multiple
+                            original tools are combined in Meta-Disorder (MD) [1] in order to predict disordered regions
+                            in proteins.
+                            <br><br>
+                            [1] Schlessinger, A., Punta, M., Yachdav, G., Kajan, L. & Rost, B. Improved Disorder
+                            Prediction by Combination of Orthogonal Approaches. PLOS ONE 4, 1–10.
+                            doi:10.1371/journal.pone.0004433 (Feb. 2009).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        {% with strongtext="Distribution of feature region lengths, relative to the length of the protein the region belongs to, with computed Kernel Density Estimate (KDE)." othertext="" %}
+                            {% include "snippets/plot_card.html" with plot=mapping.mdisorder_r_length_hist_rel.0 plotname=mapping.mdisorder_r_length_hist_rel.1 plotid=mapping.mdisorder_r_length_hist_rel.2 strongtext=strongtext othertext=othertext %}
+                        {% endwith %}
+                    </div>
+                    <div class="row">
+                        {% with strongtext="Distribution of absolute feature region lengths, independent of the protein a region belongs to,with computed Kernel Density Estimate (KDE)." othertext="" %}
+                            {% include "snippets/plot_card.html" with plot=mapping.mdisorder_r_length_hist_abs.0 plotname=mapping.mdisorder_r_length_hist_abs.1 plotid=mapping.mdisorder_r_length_hist_abs.2 strongtext=strongtext othertext=othertext %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Disorder spectrum with pairwise comparison through cross-correlation." othertext="The concept of relative indices allows to combine disordered region location and length information. The disorder spectrum plot captures the mean relative start and end positions of all disordered regions (DRs) centered at the respective x-value. Here, 95% confidence intervals are given as shaded intervals around each curve. The curve connects the mean positions of all x-values and gives the spectrum plot its name. Positions without any present DR centers  are excluded from the plot. The shape of the disorder spectrum plot is trivially limited. As center positions move to the ends of the normalized protein (y ∈ {0.0, 1.0}), the absolute maximum of start and end positions, being relative to the center, decreases. For instance, a DR centered at the relative index of 0.9 can have a maximum total width of 0.1 + 0.1 = 0.2, being restricted by the end of the protein. Disordered regions centered around 0.5 however can span the whole protein and thus reach a width of 0.5 + 0.5 = 1.0, from protein start to end. One way of measuring the visual correlation of two disorder spectra is calculating the cross-correlation (CC) for each pair of proteomes. During the development of ppprint, CC was found to distinctly separate the pairings based on the combination of their kingdoms. Corresponding zones are explained in the legend." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_r_spectrum.0 plotname=mapping.mdisorder_r_spectrum.1 plotid=mapping.mdisorder_r_spectrum.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Within-protein location of feature regions, measured as frequency of feature at each relative index position." othertext="Relative region lengths build on the concept of indices relative to protein lengths, enabling a comparison across proteins of different lengths." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_r_points.0 plotname=mapping.mdisorder_r_points.1 plotid=mapping.mdisorder_r_points.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Single value assigned to each proteome." othertext="Defined as the sum of the number of residues in any feature region of a proteome, divided by the total number of residues of all proteins in the proteome." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_p_content_proteome.0 plotname=mapping.mdisorder_p_content_proteome.1 plotid=mapping.mdisorder_p_content_proteome.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Single value assigned to each proteome." othertext="Schlessinger et al. (https://doi.org/10.1016/j.sbi.2011.03.014) defined the disorder composition per proteome as the fraction of proteins comprising at least one disordered region of length 30 or more." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_p_composition.0 plotname=mapping.mdisorder_p_composition.1 plotid=mapping.mdisorder_p_composition.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of the number of feature regions per protein, depicting the proportions of groups of proteins with different numbers of regions with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_p_num_regions.0 plotname=mapping.mdisorder_p_num_regions.1 plotid=mapping.mdisorder_p_num_regions.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="The distribution of the number of residues located in feature-regions divided by the protein length, with computed Kernel Density Estimate (KDE)." othertext="Thus, a high mean content (given in the legend) corresponds to an over-representation of proteins with a large fraction of residues contained in regions." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.mdisorder_p_content_protein.0 plotname=mapping.mdisorder_p_content_protein.1 plotid=mapping.mdisorder_p_content_protein.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

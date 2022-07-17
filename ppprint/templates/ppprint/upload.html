@@ -2,10 +2,10 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% block title %}- {% trans "upload" %}{% endblock title %}
-{% block content %}
+{% block all %}
     <h1>{% trans "Upload PP predictions" %}</h1>
     <form method="post" enctype="multipart/form-data">
     {% crispy form %}
     <input type="submit" class="btn btn-dark float-end">
     </form>
-{% endblock content %}
+{% endblock all %}

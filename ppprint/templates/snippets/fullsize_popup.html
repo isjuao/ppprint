@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+        data-bs-target="#open_{{ plotid }}">
+    <i class="bi bi-zoom-in"></i>{% trans " Full-Size" %}
+</button>
+<div class="modal fade" id="open_{{ plotid }}" tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">r
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"
+                    id="open_{{ plotid }}">{{ plotname }}</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="{{ plot }}" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization Overview" %}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of protein lengths with computed Kernel Density Estimate (KDE)." othertext="Bin values are relative to the respective proteome size. To allow enough details to be visible in the present data, the x-axis is limited to 2500 residues." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.p_length_hist.0 plotname=mapping.p_length_hist.1 plotid=mapping.p_length_hist.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Number of proteins contained in the proteome. Exact numbers are shown above the top-right corner of each bar." othertext="This plot may help to reveal potential biases arising from differences in data set size, which might in uence any absolute downstream analysis." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.p_proteome_sizes.0 plotname=mapping.p_proteome_sizes.1 plotid=mapping.p_proteome_sizes.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

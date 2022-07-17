@@ -1,0 +1,65 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization" %} - {{ view|capfirst }}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row gy-3">
+        {% for plot in mapping %}
+            <div class="col-12 col-lg-6 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        {{ plot.1 }}
+                    </div>
+                    <div class="card-body">
+                        <img src="{{ plot.0 }}" class="img-fluid">
+                        <br><br>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#open_{{ plot.2 }}">
+                            <i class="bi bi-zoom-in"></i>{% trans " Full-Size" %}
+                        </button>
+                        <div class="modal fade" id="open_{{ plot.2 }}" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="open_{{ plot.2 }}">{{ plot.1 }}</h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ plot.0 }}" class="img-fluid">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#help_{{ plot.2 }}" aria-expanded="false"
+                                aria-controls="help_{{ plot.2 }}">
+                            <i class="bi bi-info-circle"></i>{% trans " Help" %}
+                        </button>
+                        <div class="collapse" id="help_{{ plot.2 }}">
+                            <br>
+                            <div class="card w-100 card-body">
+                                Help-text-prompt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+<!-- dev purposes -->
+{% with strongtext="#st" othertext="#ot" %}
+    {% include "snippets/plot_card.html" with plot=mapping.reprof_r_points.0 plotname=mapping.reprof_r_points.1 plotid=mapping.reprof_r_points.2 strongtext=strongtext othertext=othertext %}
+{% endwith %}

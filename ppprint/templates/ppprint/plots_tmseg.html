@@ -1,0 +1,120 @@
+{% extends "ppprint/plots.html" %}
+{% load i18n %}
+{% block title %}- {% trans "comparison" %} {{ job.pk }}{% endblock title %}
+{% block pagetitle %}
+    <br>
+    <h1>{% trans "Visualization for Transmembrane Helices" %}</h1>
+    <br>
+{% endblock pagetitle %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Transmembrane Helices and TMSEG Predictor
+                    </div>
+                    <div class="card-body">
+                        <p style="text-align:justify">
+                            Proteins located in the cellular membrane constitute a subgroup of proteins only making up
+                            less than a third of an organism’s proteome. Still, these proteins fulfill numerous tasks
+                            that are essential for the living cell. Their transmembrane nature facilitates specific
+                            binding by helping with ligand recognition, regulates transport of substances across the
+                            membrane and enables communication between cells. The majority of transmembrane proteins
+                            (TMPs) contain helices (TMHs) crossing the lipid bi-layer. Since the majority of drug
+                            targets
+                            are transmembrane proteins, research regarding the distribution of TMPs and their helices
+                            among different organisms is highly relevant.
+                            <br>
+                            The potentially multiple parts of the protein that pass through the lipid bi-layer
+                            predominantly adopt helical structures. Naturally, these helices require a stretch of amino
+                            acids of a certain composition as well as minimum length in order to be formed. Studies have
+                            tried to determine a biologically safe length threshold. To capture biological realities,
+                            ppprint uses 12 amino acids as a minimum length for these transmembrane helices (TMHs) in
+                            accordance with the predictions produced by TMSEG [1]. Signal peptides (SPs) are short
+                            stretches at the N-terminus of proteins that are used for protein targeting. Since these
+                            peptides usually get clipped prior to the insertion of the TMP into the membrane, these
+                            parts
+                            of the protein are excluded. After potential SP clipping and insertion of the protein, the
+                            TMP has a certain orientation depending on the location of the protein N-terminus. TMSEG
+                            additionally produced these topological predictions.
+                            <br><br>
+                            [1] Bernhofer, M., Kloppmann, E., Reeb, J. & Rost, B. TMSEG: Novel prediction of
+                            transmembrane helices. Proteins: Structure, Function, and Bioinformatics 84, 1706–1716.
+                            doi:https://doi.org/10.1002/prot.25155 (2016).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of feature region lengths, relative to the length of the protein the region belongs to, with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_r_length_hist_rel.0 plotname=mapping.tmseg_r_length_hist_rel.1 plotid=mapping.tmseg_r_length_hist_rel.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of absolute feature region lengths, independent of the protein a region belongs to,with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_r_length_hist_abs.0 plotname=mapping.tmseg_r_length_hist_abs.1 plotid=mapping.tmseg_r_length_hist_abs.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Within-protein location of feature regions, measured as frequency of feature at each relative index position." othertext="Relative region lengths build on the concept of indices relative to protein lengths, enabling a comparison across proteins of different lengths." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_r_points.0 plotname=mapping.tmseg_r_points.1 plotid=mapping.tmseg_r_points.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Single value assigned to each proteome." othertext="Defined as the sum of the number of residues in any feature region of a proteome, divided by the total number of residues of all proteins in the proteome." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_content_proteome.0 plotname=mapping.tmseg_p_content_proteome.1 plotid=mapping.tmseg_p_content_proteome.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of the number of feature regions per protein, depicting the proportions of groups of proteins with different numbers of regions with computed Kernel Density Estimate (KDE)." othertext="" %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_num_regions.0 plotname=mapping.tmseg_p_num_regions.1 plotid=mapping.tmseg_p_num_regions.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="The distribution of the number of residues located in feature-regions divided by the protein length, with computed Kernel Density Estimate (KDE)." othertext="Thus, a high mean content (given in the legend) corresponds to an over-representation of proteins with a large fraction of residues contained in regions." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_content_protein.0 plotname=mapping.tmseg_p_content_protein.1 plotid=mapping.tmseg_p_content_protein.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of the number of transmembrane helices (TMHs) per protein." othertext="Additionally, the data is split into two groups by topological protein orientation. This can be extracellular or cytoplasmic, according to the location of the N-terminus. The fraction these two groups comprise is not depicted, but can be drawn from pie-chart plot 'Orientation of TMPs'. Proteins with an N-terminal end that is located within the membrane or a signal peptide are excluded.Additionally, the data is split into two groups by topological protein orientation. This can be extracellular or cytoplasmic, according to the location of the N-terminus. The fraction these two groups comprise is not depicted, but can be drawn from pie-chart plot “Orientation of TMPs”. Proteins with an N-terminal end that is located within the membrane or a signal peptide are excluded." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_num_regions_topo.0 plotname=mapping.tmseg_p_num_regions_topo.1 plotid=mapping.tmseg_p_num_regions_topo.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Fractions of transmembrane protein (TMP) orientations per proteome." othertext="After being inserted into the cellular membrane, the orientation of a TMP can be determined based on the location of its N-terminal end. Intuitively, TMPs with the N-terminus on the inner or outer side of the cell are labeled as 'cytoplasmic' or 'extracellular', respectively. TMPs that have a signal peptide or an amino acid sequence that begins with a transmembrane helix are classified as 'Membrane'." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_orientations.0 plotname=mapping.tmseg_p_orientations.1 plotid=mapping.tmseg_p_orientations.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Fractions of protein classes per proteome." othertext="Besides single-pass transmembrane proteins containing a single helical transmembrane domain, TMPs can alternatively be classified as 'multi-pass' when comprising multiple membrane-spanning transmembrane helices (TMHs). All non-TMPs are classified as 'globular' because of their folded conformation." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_prot_classes.0 plotname=mapping.tmseg_p_prot_classes.1 plotid=mapping.tmseg_p_prot_classes.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6">
+                    {% with strongtext="Mean topological fractions." othertext="The numbers of residues in a protein classified as belonging to one of the three topological components (inside of the cell, outside of the cell, within the membrane) can respectively be defined relative to protein length, resulting in topological fractions. This plot displays the mean fractions across all proteins of a proteome. Advancing from segment-wise (here: transmembrane helix (TMH)) data (such as the number of TMHs) in a protein to per-residue data seems to lower simplicity. At the same time, the complexity of analyzing explicit information like the number and lengths of TMHs separately is simultaneously reduced by combining the two." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_res_fractions_bars.0 plotname=mapping.tmseg_p_res_fractions_bars.1 plotid=mapping.tmseg_p_res_fractions_bars.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {% with strongtext="Distribution of topological fractions." othertext="The numbers of residues in a protein classified as belonging to one of the three topological components (inside of the cell, outside of the cell, within the membrane) can respectively be defined relative to protein length, resulting in topological fractions. This plot displays the distribution of fractions across all proteins of a proteome." %}
+                        {% include "snippets/plot_card.html" with plot=mapping.tmseg_p_res_fractions_violins.0 plotname=mapping.tmseg_p_res_fractions_violins.1 plotid=mapping.tmseg_p_res_fractions_violins.2 strongtext=strongtext othertext=othertext %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
