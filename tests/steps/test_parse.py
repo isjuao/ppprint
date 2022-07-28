@@ -191,4 +191,3 @@ def test_latin1_files(client, import_job_factory):
     # Assert job did not throw error messages
     assert ij.messages.count() == 0
 
-

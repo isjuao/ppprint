@@ -9,12 +9,13 @@ from pathlib import Path
 from typing import Dict
 
 import pandas as pd
+
 from django.conf import settings
 
 from ppprint.models import ImportJob
-from ppprint.preprocessing.extract import extract_pbased, extract_rbased, read_json
 from ppprint.preprocessing.parse import write_json
 from ppprint.preprocessing.utils import LoggedException
+from ppprint.preprocessing.extract import extract_pbased, extract_rbased, read_json
 
 
 def extract_data(base_folder: Path, data_folder: Path):
@@ -88,6 +89,6 @@ def load(path: Path) -> Dict[str, pd.DataFrame]:
 #     # For local testing only
 #     # Comment out django imports first
 #     example_json_path = Path(
-#         "/home/isabell/work/python/thesis/ppprint/media/import_job/1/data.json"
+#         "/home/isabell/work/python/thesis/ppprint/tests/data/oneprotein/data.json"
 #     )
 #     run_info(example_json_path)

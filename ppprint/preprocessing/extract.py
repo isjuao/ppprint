@@ -71,6 +71,15 @@ def extract_pbased_mdisorder(
     # Calculate region content as last step, when (correct) lengths of all proteins got collected
     df_new["region content"] = df_new["sum region lengths"] / df_new["protein length"]
 
+    df_new = df_new.astype(
+        {
+            "number of regions": "int64",
+            "median length": "float64",
+            "sum region lengths": "int64",
+            "protein length": "int64",
+            "region content": "float64",
+        }
+    )
     return df_new
 
 
@@ -147,6 +156,20 @@ def extract_pbased_tmseg(df_source: pd.DataFrame, *args, **kwargs):
     orientation_series.name = "orientation"
     df_new = df_new.join(orientation_series, how="left").fillna(0)
 
+    df_new = df_new.astype(
+        {
+            "number of regions": "int64",
+            "median length": "float64",
+            "sum region lengths": "int64",
+            "protein length": "int64",
+            "shift size": "int64",
+            "region content": "float64",
+            "I": "float64",
+            "O": "float64",
+            "M": "float64",
+            "orientation": "str",
+        }
+    )
     return df_new
 
 
@@ -215,6 +238,22 @@ def extract_pbased_prona(df_source: pd.DataFrame, *args, **kwargs):
         }
     )
 
+    df_new = df_new.astype(
+        {
+            "number of regions": "int64",
+            "median length": "float64",
+            "sum region lengths": "int64",
+            "protein length": "int64",
+            "region content": "float64",
+            "DBR content": "float64",
+            "PBR content": "float64",
+            "RBR content": "float64",
+            "num DBR": "int64",
+            "num PBR": "int64",
+            "num RBR": "int64",
+        }
+    )
+
     return df_new
 
 
@@ -252,6 +291,19 @@ def extract_pbased_reprof(df_source: pd.DataFrame, *args, **kwargs):
             "Helix": "H",
             "Strand": "E",
             "Other": "O",
+        }
+    )
+
+    df_new = df_new.astype(
+        {
+            "number of regions": "int64",
+            "median length": "float64",
+            "sum region lengths": "int64",
+            "protein length": "int64",
+            "region content": "float64",
+            "H": "float64",
+            "O": "float64",
+            "E": "float64",
         }
     )
 
@@ -425,6 +477,17 @@ def extract_rbased(df_source: pd.DataFrame, df_seq: pd.DataFrame):
 
         # Perform feature-specific extraction and store pbased results
         df_r = func(df_curr, df_seq, **kwargs)
+        df_r = df_r.astype(
+            {
+                "protein": "int64",
+                #"region": "float64",
+                "reg length": "int64",
+                "description": "str",
+                #"point region": "float64",
+                "protein length": "int64",
+                "rel reg length": "float64",
+            }
+        )
         results[f"{feature} rbased"] = df_r
 
     return results

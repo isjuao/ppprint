@@ -1,0 +1,157 @@
+[
+  {
+    "sequence": "MRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "tmseg": [
+      {
+        "begin": 1,
+        "end": 12,
+        "description": "Extracellular"
+      },
+      {
+        "begin": 13,
+        "end": 24,
+        "description": "Transmembrane Helix"
+      },
+      {
+        "begin": 25,
+        "end": 32,
+        "description": "Cytoplasmic"
+      },
+      {
+        "begin": 33,
+        "end": 39,
+        "description": "Transmembrane Helix"
+      },
+      {
+        "begin": 40,
+        "end": 60,
+        "description": "Extracellular"
+      }
+    ],
+    "prona": [
+      {
+        "begin": 1,
+        "end": 6,
+        "description": "Protein Binding (RI: 67-100)"
+      },
+      {
+        "begin": 7,
+        "end": 13,
+        "description": "Protein Binding (RI: 33-66)"
+      },
+      {
+        "begin": 14,
+        "end": 18,
+        "description": "Protein Binding (RI: 67-100)"
+      },
+      {
+        "begin": 20,
+        "end": 25,
+        "description": "DNA Binding (RI: 67-100)"
+      },
+      {
+        "begin": 26,
+        "end": 33,
+        "description": "DNA Binding (RI: 33-66)"
+      },
+      {
+        "begin": 34,
+        "end": 38,
+        "description": "DNA Binding (RI: 67-100)"
+      },
+      {
+        "begin": 39,
+        "end": 44,
+        "description": "RNA Binding (RI: 67-100)"
+      },
+      {
+        "begin": 45,
+        "end": 53,
+        "description": "RNA Binding (RI: 33-66)"
+      },
+      {
+        "begin": 54,
+        "end": 58,
+        "description": "RNA Binding (RI: 67-100)"
+      }
+    ],
+    "mdisorder": [
+      {
+        "begin": 1,
+        "end": 30,
+        "description": "Disordered Region"
+      },
+      {
+        "begin": 31,
+        "end": 50,
+        "description": "Disordered Region"
+      }
+    ],
+    "reprof": [
+      {
+        "begin": 1,
+        "end": 10,
+        "description": "Helix"
+      },
+      {
+        "begin": 11,
+        "end": 20,
+        "description": "Strand"
+      },
+      {
+        "begin": 21,
+        "end": 23,
+        "description": "Helix"
+      },
+      {
+        "begin": 24,
+        "end": 26,
+        "description": "Strand"
+      },
+      {
+        "begin": 27,
+        "end": 60,
+        "description": "Other"
+      }
+    ]
+  },
+  {
+    "sequence": "MFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "tmseg": [
+      {
+        "begin": 1,
+        "end": 10,
+        "description": "Signal Peptide"
+      },
+      {
+        "begin": 11,
+        "end": 22,
+        "description": "Transmembrane Helix"
+      },
+      {
+        "begin": 23,
+        "end": 26,
+        "description": "Extracellular"
+      },
+      {
+        "begin": 27,
+        "end": 38,
+        "description": "Transmembrane Helix"
+      },
+      {
+        "begin": 39,
+        "end": 70,
+        "description": "Cytoplasmic"
+      }
+    ],
+    "prona": [],
+    "mdisorder": [
+      {
+        "begin": 49,
+        "end": 69,
+        "description": "Disordered Region"
+      }
+    ],
+    "reprof": []
+  }
+]
