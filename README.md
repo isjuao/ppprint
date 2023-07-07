@@ -114,3 +114,7 @@ feature-related detail pages in order to view the produced forms of visualizatio
 basic dashboards. Since **ppprint** is still in development, user-guiding indications such as
 plot-specific help texts for interpretation and the introduction of required concepts are yet
 to be added.
+
+An exemplary view of the disorder subpage of the visualisation dashboard for a comparison of 4 organisms can be seen below.
+
+![ppprint exampel](ppprint-vis-example.png)
