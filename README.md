@@ -77,6 +77,8 @@ application will be accessible as an online service.
 
 ### Using a local version of ppprint
 
+![ppprint dataflow](ppprint-flow.png)
+
 #### Uploading data
 
 In order to make PredictProtein predictions available for comparison, the user has to
